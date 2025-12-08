@@ -1,17 +1,13 @@
-from classes import Echiquier
-
 class Piece:
     nom: str
     deplacements: list[int]
     position: tuple
     estNoir: bool
-    echiquier: Echiquier
     mouvementsEffectues: int
 
 
-    def __init__(self,nom: str, echiquier: Echiquier, estNoir: bool, position: tuple, deplacements: list[int], mouvementsEffectues: int = 0) -> None:
+    def __init__(self,nom: str, estNoir: bool, position: tuple, deplacements: list[int], mouvementsEffectues: int) -> None:
         self.nom = nom
-        self.echiquier = echiquier
         self.estNoir = estNoir
         self.position = position
         self.deplacements = []
@@ -34,7 +30,11 @@ class Piece:
         Returns:
             bool: true si le déplacement est possible, false sinon
         """
-        pass
+        for deplacement in self.deplacements:
+            if self.position[0] + deplacement[0] == position[0] and self.position[1] + deplacement[1] == position[1]:
+                return True
+        return False
+
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Piece):
