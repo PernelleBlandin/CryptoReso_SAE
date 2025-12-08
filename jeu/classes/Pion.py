@@ -16,6 +16,6 @@ class Pion(Piece):
     def __str__(self) -> str:
         cote = 'Noir' if self.est_noir else 'Blanc'
         return 'Type : Pion' \
-               f' - Position : {self.position}' \
-               f' - Côte : {cote}' \
-               f' -- Mouvements effectués : {self.mouvements_effectues}'
+                f' - Position : {self.position}' \
+                f' - Côte : {cote}' \
+                f' -- Mouvements effectués : {self.mouvements_effectues}'
