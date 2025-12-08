@@ -14,7 +14,7 @@ class Pion(Piece):
         self.stringRep = '▲' if not self.est_noir else '▼'
 
     def __str__(self) -> str:
-        cote = 'Noir' if self.estN else 'Blanc'
+        cote = 'Noir' if self.est_noir else 'Blanc'
         return 'Type : Pion' \
                ' - Position : ' + str(self.position) + \
                ' - Côte : ' + cote + \
