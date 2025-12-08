@@ -1,4 +1,4 @@
-from classes import Piece
+from .Piece import Piece
 
 class Pion(Piece):
     nom: str
@@ -10,13 +10,12 @@ class Pion(Piece):
 
     def __init__(self, est_noir: bool, position: tuple, mouvements_effectues: int) -> None:
         
-        super().__init__('Pion', est_noir, position, [(0, 1), (0, 2)] if mouvements_effectues == 0 else [(0, 1)], mouvements_effectues = 0)
-        self.stringRep = '▲' if not self.est_noir else '▼'
+        super().__init__('Pion', est_noir, position, [(0, 1), (0, 2)] if mouvements_effectues == 0 else [(0, 1)], mouvements_effectues)
+        self.stringRep = '♙' if not self.est_noir else '♟'
 
     def __str__(self) -> str:
         cote = 'Noir' if self.est_noir else 'Blanc'
         return 'Type : Pion' \
-               ' - Position : ' + str(self.position) + \
-               ' - Côte : ' + cote + \
-               ' -- Value : ' + str(self.value) + \
-               ' -- Mouvements effectués : ' + str(self.mouvements_effectues)
+               f' - Position : {self.position}' \
+               f' - Côte : {cote}' \
+               f' -- Mouvements effectués : {self.mouvements_effectues}'

@@ -1,19 +1,20 @@
+from typing import List
 class Piece:
     nom: str
-    deplacements: list[int]
+    deplacements: list[tuple[int, int]]
     position: tuple
     est_noir: bool
     mouvements_effectues: int
 
 
-    def __init__(self,nom: str, est_noir: bool, position: tuple, deplacements: list[int], mouvements_effectues: int) -> None:
+    def __init__(self,nom: str, est_noir: bool, position: tuple, deplacements: list[tuple[int, int]], mouvements_effectues: int) -> None:
         self.nom = nom
         self.est_noir = est_noir
         self.position = position
-        self.deplacements = []
+        self.deplacements = deplacements
         self.mouvements_effectues = 0
 
-    def getMouvementsPossibles(self) -> List[int]:  # type: ignore[empty-body]
+    def getMouvementsPossibles(self) -> List[tuple[int, int]]:
         """Retourne la liste des mouvements possibles de la pièce
 
         Returns:
@@ -38,10 +39,9 @@ class Piece:
     def __str__(self) -> str:
         cote = 'Noir' if self.est_noir else 'Blanc'
         return 'Type : Piece' \
-               ' - Position : ' + str(self.position) + \
-               ' - Côte : ' + cote + \
-               ' -- Value : ' + str(self.value) + \
-               ' -- Mouvements effectués : ' + str(self.mouvements_effectues)
+               f' - Position : {self.position}' \
+               f' - Côte : {cote}' \
+               f' -- Mouvements effectués : {self.mouvements_effectues}'
 
     def __eq__(self, other: object) -> bool:
         """Vérifie si deux pièces sont égales
@@ -55,9 +55,8 @@ class Piece:
         if not isinstance(other, Piece):
             return NotImplemented
         if (
-                self.board == other.board and self.side == other.side
+                self.nom == other.nom and self.est_noir == other.est_noir
                 and self.position == other.position
-                and self.__class__ == other.__class__
-        ):
+                and self.mouvements_effectues == other.mouvements_effectues):
             return True
         return False
