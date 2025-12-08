@@ -1,29 +1,35 @@
 from .Piece import Piece
 from .Pion import Pion
 
-PIECE= []
 
-class Echiquier():
+class Echiquier:
     pieces: list[Piece]
-    
+
     def __init__(self):
         self.pieces = []
+        self.initialiser_piece()
 
     def initialiser_piece(self):
         # Pions blancs
         for i in range(8):
-            self.pieces.append(Pion(est_noir=False, position=(i, 1), mouvements_effectues=0))
+            self.ajouter_piece(
+                Pion(est_noir=False, position=(i, 1), mouvements_effectues=0)
+            )
 
         # Pions noirs
         for i in range(8):
-            self.pieces.append(Pion(est_noir=True, position=(i, 6), mouvements_effectues=0))
+            self.ajouter_piece(
+                Pion(est_noir=True, position=(i, 6), mouvements_effectues=0)
+            )
 
-    def ajouter_piece(self, piece:Piece, pos: tuple):
-        PIECE.append((piece, pos))
-    
-    def deplacer(self, piece:Piece, pos: tuple):
+    def ajouter_piece(self, piece: Piece, pos: tuple):
+        self.pieces.append((piece, pos))
+
+    def ajouter_piece(self, piece: Piece):
+        self.pieces.append(piece)
+
+    def deplacer(self, piece: Piece, pos: tuple):
         pass
-
 
     def get_piece(self, position: tuple[int, int]) -> Piece | None:
         """Retourne la pièce à une position donnée ou None si aucune pièce n'est présente
@@ -36,7 +42,7 @@ class Echiquier():
             if piece.position == position:
                 return piece
         return None
-    
+
     def est_vide(self, pos: tuple):
         pass
 
@@ -60,6 +66,6 @@ class Echiquier():
             board_str += "\n"
         board_str += "   a  b  c  d  e  f  g  h \n"
         return board_str
-    
+
     def jouer(self):
         pass
