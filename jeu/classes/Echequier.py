@@ -1,6 +1,7 @@
 from .Piece import Piece
 from .Pion import Pion
 from .Cavalier import Cavalier
+from .Fou import Fou
 
 
 class Echiquier:
@@ -13,31 +14,27 @@ class Echiquier:
     def initialiser_piece(self):
         # Pions blancs
         for i in range(8):
-            self.ajouter_piece(
-                Pion(est_noir=False, position=(i, 1), mouvements_effectues=0)
-            )
+            self.ajouter_piece(Pion(est_noir=False, position=(i, 1), mouvements_effectues=0))
 
         # Pions noirs
         for i in range(8):
-            self.ajouter_piece(
-                Pion(est_noir=True, position=(i, 6), mouvements_effectues=0)
-            )
+            self.ajouter_piece(Pion(est_noir=True, position=(i, 6), mouvements_effectues=0))
 
         # Cavalier blancs
-        self.ajouter_piece(
-            Cavalier(est_noir=False, position=(1, 0), mouvements_effectues=0)
-        )
-        self.ajouter_piece(
-            Cavalier(est_noir=False, position=(6, 0), mouvements_effectues=0)
-        )
+        self.ajouter_piece(Cavalier(est_noir=False, position=(1, 0), mouvements_effectues=0))
+        self.ajouter_piece(Cavalier(est_noir=False, position=(6, 0), mouvements_effectues=0))
 
         # Cavalier noirs
-        self.ajouter_piece(
-            Cavalier(est_noir=True, position=(1, 7), mouvements_effectues=0)
-        )
-        self.ajouter_piece(
-            Cavalier(est_noir=True, position=(6, 7), mouvements_effectues=0)
-        )
+        self.ajouter_piece(Cavalier(est_noir=True, position=(1, 7), mouvements_effectues=0))
+        self.ajouter_piece(Cavalier(est_noir=True, position=(6, 7), mouvements_effectues=0))
+
+        # Fou blancs
+        self.ajouter_piece(Fou(est_noir=False, position=(2, 0), mouvements_effectues=0))
+        self.ajouter_piece(Fou(est_noir=False, position=(5, 0), mouvements_effectues=0))
+
+        # Fou noirs
+        self.ajouter_piece(Fou(est_noir=True, position=(2, 7), mouvements_effectues=0))
+        self.ajouter_piece(Fou(est_noir=True, position=(5, 7), mouvements_effectues=0))
 
     def ajouter_piece(self, piece: Piece, pos: tuple):
         self.pieces.append((piece, pos))
