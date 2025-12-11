@@ -1,8 +1,8 @@
 ## Composition de l'équipe de développeurs
 
-- De Jesus Pinto Erika (@KuRika28)  
+- De Jesus Pinto Erika (@KDeJesusPinto)  
 - Blandin Pernelle (@PernelleBlandin)  
-- Fronton Maelyss (@Cherry5990)  
+- Fronton Maelyss (@MaelyssF)  
 - Hachelef Asma (@Asminouch)  
 
 ## Règles de déplacement des pièces:
