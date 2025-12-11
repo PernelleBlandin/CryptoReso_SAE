@@ -98,7 +98,11 @@ class Echiquier:
                 if piece:
                     board_str += f" {piece.stringRep} "
                 else:
-                    board_str += " ☐ "
+                    if (x + y) % 2 == 0:
+                        board_str += " ☐ "  # White square
+                    else:
+                        board_str += " ■ "  # Black square
+
             board_str += "\n"
         board_str += "   a  b  c  d  e  f  g  h \n"
         return board_str
