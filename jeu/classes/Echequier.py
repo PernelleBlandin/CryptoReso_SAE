@@ -2,7 +2,9 @@ from .Piece import Piece
 from .Pion import Pion
 from .Cavalier import Cavalier
 from .Fou import Fou
-
+from .Tour import Tour
+from .Reine import Reine
+from .Roi import Roi
 
 class Echiquier:
     pieces: list[Piece]
@@ -35,6 +37,26 @@ class Echiquier:
         # Fou noirs
         self.ajouter_piece(Fou(est_noir=True, position=(2, 7), mouvements_effectues=0))
         self.ajouter_piece(Fou(est_noir=True, position=(5, 7), mouvements_effectues=0))
+
+        # Tour noirs
+        self.ajouter_piece(Tour(est_noir=True, position=(0, 7), mouvements_effectues=0))
+        self.ajouter_piece(Tour(est_noir=True, position=(7, 7), mouvements_effectues=0))
+
+        # Tour blancs
+        self.ajouter_piece(Tour(est_noir=False, position=(0, 0), mouvements_effectues=0))
+        self.ajouter_piece(Tour(est_noir=False, position=(7, 0), mouvements_effectues=0))
+
+        # Reine blanche
+        self.ajouter_piece(Reine(est_noir=False, position=(3, 0), mouvements_effectues=0))
+
+        # Reine noire
+        self.ajouter_piece(Reine(est_noir=True, position=(3, 7), mouvements_effectues=0))
+
+        # Roi blanc
+        self.ajouter_piece(Roi(est_noir=False, position=(4, 0), mouvements_effectues=0))
+
+        # Roi noir
+        self.ajouter_piece(Roi(est_noir=True, position=(4, 7), mouvements_effectues=0))
 
     def ajouter_piece(self, piece: Piece, pos: tuple):
         self.pieces.append((piece, pos))
