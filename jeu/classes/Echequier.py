@@ -1,5 +1,6 @@
 from .Piece import Piece
 from .Pion import Pion
+from .Cavalier import Cavalier
 
 
 class Echiquier:
@@ -21,6 +22,22 @@ class Echiquier:
             self.ajouter_piece(
                 Pion(est_noir=True, position=(i, 6), mouvements_effectues=0)
             )
+
+        # Cavalier blancs
+        self.ajouter_piece(
+            Cavalier(est_noir=False, position=(1, 0), mouvements_effectues=0)
+        )
+        self.ajouter_piece(
+            Cavalier(est_noir=False, position=(6, 0), mouvements_effectues=0)
+        )
+
+        # Cavalier noirs
+        self.ajouter_piece(
+            Cavalier(est_noir=True, position=(1, 7), mouvements_effectues=0)
+        )
+        self.ajouter_piece(
+            Cavalier(est_noir=True, position=(6, 7), mouvements_effectues=0)
+        )
 
     def ajouter_piece(self, piece: Piece, pos: tuple):
         self.pieces.append((piece, pos))

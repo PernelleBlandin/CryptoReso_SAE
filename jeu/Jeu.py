@@ -5,6 +5,7 @@ class Jeu():
         self.echiquier = Echiquier()
 
     def lancer(self):
+        print("\n")
         print("Bienvenue dans le jeu d'échecs !\n")
         print(self.echiquier)
 
