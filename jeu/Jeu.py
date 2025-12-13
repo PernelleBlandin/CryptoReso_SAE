@@ -1,10 +1,14 @@
 from classes.Plateau import Plateau
+from classes.Joueur import Joueur
 import os
 from os import system
 
 class Jeu():
-    def __init__(self) -> None:
+
+    def __init__(self, joueur1: Joueur, joueur2: Joueur) -> None:
         self.plateau = Plateau()
+        self.joueur1 = joueur1 # joueur blanc
+        self.joueur2 = joueur2 # Joueur noir
 
     def lancer(self):
         print("\n")
@@ -72,7 +76,9 @@ class Jeu():
 
 
 if __name__ == "__main__":
-    jeu = Jeu()
+    joueur_blanc = Joueur('joueur1', True)
+    joueur_noir = Joueur('joueur2', False)
+    jeu = Jeu(joueur_blanc, joueur_noir)
     jeu.lancer()
     mov = 0
     turns = ['w','b']
