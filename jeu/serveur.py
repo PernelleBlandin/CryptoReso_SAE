@@ -31,7 +31,6 @@ class Session:
         fini = False
         while not fini:
             if self.joueur1 == None:
-                print("là")
                 self.file.write("Donner un nom pour le joueur Blanc : " + "\n")
                 self.file.flush()
                 pseudoBlanc = self.file.readline().strip()

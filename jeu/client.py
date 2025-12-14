@@ -8,12 +8,10 @@ def client(host, port):
 
     mess = ""
     while True:
-        print(mess)
         if mess == "quit": 
             break
         retour = f.readline().strip()
-        print(retour)
-        mess = input()
+        mess = input(retour)
         f.write(mess + "\n")
         f.flush()
 
