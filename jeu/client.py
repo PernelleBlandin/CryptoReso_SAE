@@ -1,7 +1,7 @@
 import socket
 import constantes
 
-def client(host, port):
+def client(host:str, port:int):
     sock = socket.socket()
     sock.connect((host, port))
     f = sock.makefile(mode="rw")
@@ -19,4 +19,4 @@ def client(host, port):
     sock.shutdown(socket.SHUT_RDWR)
     sock.close()
 
-client("localhost", constantes.PORT)
+client(constantes.IP, constantes.PORT)
