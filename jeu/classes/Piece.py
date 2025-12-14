@@ -46,7 +46,7 @@ class Piece:
             ):
                 return True
         return False
-
+    
     def __str__(self) -> str:
         cote = "Noir" if self.est_noir else "Blanc"
         return (

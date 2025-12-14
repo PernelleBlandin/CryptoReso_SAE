@@ -1,7 +1,7 @@
 class Joueur:
-    def __init__(self, pseudo: str, estNoir: bool):
+    def __init__(self, pseudo: str, est_noir: bool) -> None:
         self.pseudo = pseudo
-        self.estNoir = estNoir
+        self.est_noir = est_noir
 
-    def jouer():
-        pass
+    def __str__(self) -> str:
+        return "Joueur " + self.pseudo + " (Noir)" if self.est_noir else "Joueur " + self.pseudo + " (Blanc)"
