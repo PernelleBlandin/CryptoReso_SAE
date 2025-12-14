@@ -22,7 +22,7 @@ class Piece:
         self.deplacements = deplacements
         self.mouvements_effectues = 0
 
-    def get_mouvement_possibles(self) -> List[tuple[int, int]]:
+    def get_mouvements_possibles(self) -> List[tuple[int, int]]:
         """Retourne la liste des mouvements possibles de la pièce
 
         Returns:
