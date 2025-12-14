@@ -19,7 +19,7 @@ class Roi(Piece):
             DEPLACEMENT_ROI,
             mouvements_effectues=0,
         )
-        self.stringRep = "♔" if not self.est_noir else "♚"
+        self.stringRep = "♔" if self.est_noir else "♚"
 
     def __str__(self) -> str:
         cote = "Noir" if self.est_noir else "Blanc"

@@ -21,7 +21,7 @@ class Tour(Piece):
             mouvements_effectues
         )
         
-        self.stringRep = "♖" if not self.est_noir else "♜"
+        self.stringRep = "♖" if self.est_noir else "♜"
 
     def __str__(self) -> str:
         cote = "Noir" if self.est_noir else "Blanc"

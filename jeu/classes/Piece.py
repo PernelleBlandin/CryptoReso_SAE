@@ -22,7 +22,7 @@ class Piece:
         self.deplacements = deplacements
         self.mouvements_effectues = 0
 
-    def getMouvementsPossibles(self) -> List[tuple[int, int]]:
+    def get_mouvement_possibles(self) -> List[tuple[int, int]]:
         """Retourne la liste des mouvements possibles de la pièce
 
         Returns:
@@ -30,7 +30,7 @@ class Piece:
         """
         return self.deplacements
 
-    def estMouvementValide(self, position: tuple) -> bool:
+    def est_mouvement_valide(self, position: tuple) -> bool:
         """Retourne vrai si la pièce peut effectuer le mouvement
 
         Args:
@@ -46,7 +46,7 @@ class Piece:
             ):
                 return True
         return False
-
+    
     def __str__(self) -> str:
         cote = "Noir" if self.est_noir else "Blanc"
         return (

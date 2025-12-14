@@ -12,15 +12,14 @@ class Pion(Piece):
     def __init__(
         self, est_noir: bool, position: tuple, mouvements_effectues: int
     ) -> None:
-
         super().__init__(
             "Pion",
             est_noir,
             position,
-            [(0, 1), (0, 2)] if mouvements_effectues == 0 else [(0, 1)],
+            [], # Les déplacements du pion sont gérés dynamiquement dans la classe Echiquier avec le nombre de mouvements effectués
             mouvements_effectues,
         )
-        self.stringRep = "♙" if not self.est_noir else "♟"
+        self.stringRep = "♙" if self.est_noir else "♟"
 
     def __str__(self) -> str:
         cote = "Noir" if self.est_noir else "Blanc"
