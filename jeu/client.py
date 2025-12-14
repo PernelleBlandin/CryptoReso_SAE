@@ -1,20 +1,24 @@
 import socket
+import constantes
 
 def client(host, port):
-    sock= socket.socket()
+    sock = socket.socket()
     sock.connect((host, port))
-    f= sock.makefile(mode="rw")
+    f = sock.makefile(mode="rw")
 
     mess = ""
     while True:
-        mess = input('Entrez votre message ("quit" pour quitter) -> ') + "\n"
-        f.write(mess)
-        f.flush()
-        if mess == "quit\n": 
+        print(mess)
+        if mess == "quit": 
             break
+        retour = f.readline().strip()
+        print(retour)
+        mess = input()
+        f.write(mess + "\n")
+        f.flush()
 
     f.close()
     sock.shutdown(socket.SHUT_RDWR)
     sock.close()
 
-client("localhost", 5555)
+client("localhost", constantes.PORT)

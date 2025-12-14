@@ -27,6 +27,9 @@ class Jeu():
             pseudo_gagnant = pseudo_blanc
         enregistrer_partie(pseudo_blanc, pseudo_noir, pseudo_gagnant)
 
+    def lancer_pour_serveur(self):
+        print("À implémenter...")
+
 
 if __name__ == "__main__":
     jeu = Jeu(None, None)

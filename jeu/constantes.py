@@ -62,3 +62,7 @@ DEPLACEMENT_ROI = [
     (1, 1),
     (0, 1),
 ]
+
+############ POUR LE SERVEUR ############
+
+PORT = 5500
