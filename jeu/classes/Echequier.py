@@ -131,11 +131,11 @@ class Echiquier:
 
             # Captures diagonales
             for dx in [-1, 1]:
-                target = (x + dx, y + dir_y)
-                if self.pos_valide(target):
-                    p = self.get_piece(target)
+                cible = (x + dx, y + dir_y)
+                if self.pos_valide(cible):
+                    p = self.get_piece(cible)
                     if p and p.est_noir != piece.est_noir:
-                        coups.append(target)
+                        coups.append(cible)
 
         # Tour, Fou, Reine
         elif isinstance(piece, (Tour, Fou, Reine)):
@@ -236,10 +236,10 @@ class Echiquier:
         coups = []
         for p in self.pieces:
             if p.est_noir == est_noir:
-                possibles = self.recuperer_coups_possibles(p)
-                for target in possibles:
-                    if self.simuler_coup(p, target):
-                        coups.append((p, target))
+                possibilites = self.recuperer_coups_possibles(p)
+                for cible in possibilites:
+                    if self.simuler_coup(p, cible):
+                        coups.append((p, cible))
         return coups
 
     def deplacer(self, piece: Piece, pos: tuple):
