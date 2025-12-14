@@ -23,10 +23,14 @@ class Session:
         self.counter = 0
 
     def mainSession(self):
-        fini= False
+        print("Setting a new session...")
+        fini = False
         while not fini:
-            line =self.file.readline().strip()
+            line = self.file.readline().strip()
             print("Commande reçue : " + line)
+            if line == "quit":
+                fini = True
+        print("Exiting the current session...")
         self.file.close()
         self.socket.shutdown(socket.SHUT_RDWR)
         self.socket.close()
