@@ -160,7 +160,7 @@ class Echiquier:
 
         # Cavalier, Roi
         else:
-            for dx, dy in piece.deplacements:
+            for dx, dy in piece.get_mouvements_possibles():
                 tx, ty = x + dx, y + dy
                 if self.pos_valide((tx, ty)):
                     p = self.get_piece((tx, ty))
@@ -256,7 +256,7 @@ class Echiquier:
         piece.mouvements_effectues += 1
 
 
-    def jouer(self):
+    def jouer(self, joueur_blanc=None, joueur_noir=None):
         tour_noir = False # Les blancs commencent
         
         while True:
@@ -272,17 +272,15 @@ class Echiquier:
                 print(f"ECHEC aux {joueur}s !")
                 if not self.coups_legaux(tour_noir):
                     print(f"ECHEC ET MAT ! Les {'Blancs' if tour_noir else 'Noirs'} gagnent !")
-                    break
+                    return tour_noir  # True si noir gagne, False si blanc gagne
             else:
                 if not self.coups_legaux(tour_noir):
                     print("PAT ! Match nul.")
-                    break
-            
-            # Saisie du coup
+                    return None  # Match nul
+
             coup = input("Entrez votre coup (ex: e2e4) ou 'q' pour quitter: ").strip().lower()
             if coup == 'q':
                 break
-            
             if len(coup) != 4:
                 input("Format invalide. Appuyez sur Entrée...")
                 continue
