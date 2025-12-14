@@ -1,0 +1,4 @@
+./nfs
+__pycache__/
+jeu/__pycache__/
+jeu/classes/__pycache__/

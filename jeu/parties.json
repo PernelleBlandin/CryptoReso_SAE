@@ -1,0 +1,14 @@
+[
+  {
+    "blanc": "joueur1",
+    "noir": "joueur2",
+    "gagnant": "Abandon joueur1. Victoire joueur2",
+    "date": "2025:12:14 15:12:20"
+  },
+  {
+    "blanc": "Mais",
+    "noir": "Bleuet",
+    "gagnant": "Abandon Bleuet. Victoire Mais",
+    "date": "2025:12:14 18:15:09"
+  }
+]
