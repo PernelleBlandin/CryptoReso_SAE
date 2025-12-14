@@ -260,12 +260,9 @@ class Echiquier:
         tour_noir = False # Les blancs commencent
         
         while True:
+            # Nettoyer le terminal à chaque tour
             os.system('cls' if os.name == 'nt' else 'clear')
-
-            tour = 0
-            print(f"Tour {tour}\n")
             print(self)
-            tour += 1
 
             joueur = "Noir" if tour_noir else "Blanc"
             print(f"C'est au tour des {joueur}s")
