@@ -62,12 +62,12 @@ class Echiquier:
     def ajouter_piece(self, piece: Piece):
         self.pieces.append(piece)
 
-    # --- Méthodes utilitaires ---
-
     def get_piece(self, position: tuple[int, int]) -> Piece | None:
         """Retourne la pièce à une position donnée ou None si aucune pièce n'est présente
+
         Args:
             position (tuple[int, int]): la position à vérifier
+
         Returns:
             Piece | None: la pièce à la position donnée ou None si aucune pièce n'est présente
         """
@@ -86,6 +86,7 @@ class Echiquier:
 
     def __str__(self) -> str:
         """Affiche l'échiquier dans la console
+
         Returns:
             str: la représentation textuelle de l'échiquier
         """
@@ -107,10 +108,18 @@ class Echiquier:
         return board_str
 
     def recuperer_coups_possibles(self, piece: Piece) -> list[tuple[int, int]]:
-        """Retourne tous les coups théoriquement possibles pour une pièce (sans vérifier l'échec)"""
+        """Retourne tous les coups possibles pour une pièce avec les captures (sans vérifier l'échec)
+        
+        Args:
+            piece (Piece): la pièce dont on veut les coups possibles
+
+        Returns:
+            list[tuple[int, int]]: la liste des coups possibles
+        """
         coups = []
         x, y = piece.position
 
+        # Le Pion
         if isinstance(piece, Pion):
             dir_y = 1 if not piece.est_noir else -1
             # Avance de 1
@@ -119,6 +128,7 @@ class Echiquier:
                 # Avance de 2 (si premier mouvement)
                 if piece.mouvements_effectues == 0 and self.pos_valide((x, y + 2*dir_y)) and self.est_vide((x, y + 2*dir_y)):
                     coups.append((x, y + 2*dir_y))
+
             # Captures diagonales
             for dx in [-1, 1]:
                 target = (x + dx, y + dir_y)
@@ -127,6 +137,7 @@ class Echiquier:
                     if p and p.est_noir != piece.est_noir:
                         coups.append(target)
 
+        # Tour, Fou, Reine
         elif isinstance(piece, (Tour, Fou, Reine)):
             directions = []
             if isinstance(piece, (Tour, Reine)):
@@ -145,9 +156,10 @@ class Echiquier:
                     else:
                         if p.est_noir != piece.est_noir:
                             coups.append((tx, ty))
-                        break # Bloqué par une pièce
+                        break # Bloqué par une pièce de la même couleur
 
-        else: # Cavalier, Roi
+        # Cavalier, Roi
+        else:
             for dx, dy in piece.deplacements:
                 tx, ty = x + dx, y + dy
                 if self.pos_valide((tx, ty)):
@@ -158,7 +170,14 @@ class Echiquier:
         return coups
 
     def est_en_echec(self, est_noir: bool) -> bool:
-        """Vérifie si le roi de la couleur donnée est en échec"""
+        """Vérifie si le roi de la couleur donnée est en échec
+        
+        Args:
+            est_noir (bool): la couleur du roi à vérifier
+
+        Returns:
+            bool: True si le roi est en échec, False sinon
+        """
         roi_pos = None
         for p in self.pieces:
             if isinstance(p, Roi) and p.est_noir == est_noir:
@@ -166,39 +185,54 @@ class Echiquier:
                 break
         
         if not roi_pos:
-            return False # Cas théorique impossible
+            return False
 
         # Vérifier si une pièce adverse peut attaquer le roi
         for p in self.pieces:
             if p.est_noir != est_noir:
-                # On récupère les coups "bruts" de l'adversaire
+                # On récupère les coups de l'adversaire
                 coups = self.recuperer_coups_possibles(p)
                 if roi_pos in coups:
                     return True
         return False
 
-    def simuler_coup(self, piece: Piece, target: tuple) -> bool:
-        """Simule un coup et retourne True si le coup est légal (ne met pas son propre roi en échec)"""
-        original_pos = piece.position
-        piece_capturee = self.get_piece(target)
+    def simuler_coup(self, piece: Piece, arrivee: tuple) -> bool:
+        """Simule un coup et retourne True si le coup est légal (ne met pas son propre roi en échec)
+        
+        Args:
+            piece (Piece): la pièce qui effectue le coup
+            arrivee (tuple): la position d'arrivée du coup
+
+        Returns:
+            bool: True si le coup est légal, False sinon
+        """
+        depart = piece.position
+        piece_capturee = self.get_piece(arrivee)
         
         # Appliquer le coup
         if piece_capturee:
             self.pieces.remove(piece_capturee)
-        piece.position = target
+        piece.position = arrivee
         
         # Vérifier l'échec
         en_echec = self.est_en_echec(piece.est_noir)
         
         # Annuler le coup
-        piece.position = original_pos
+        piece.position = depart
         if piece_capturee:
             self.pieces.append(piece_capturee)
             
         return not en_echec
 
     def coups_legaux(self, est_noir: bool) -> list[tuple[Piece, tuple]]:
-        """Retourne tous les coups légaux pour une couleur donnée"""
+        """Retourne tous les coups légaux pour une couleur donnée
+        
+        Args:
+            est_noir (bool): la couleur à vérifier
+
+        Returns:
+            list[tuple[Piece, tuple]]: la liste des coups légaux
+        """
         coups = []
         for p in self.pieces:
             if p.est_noir == est_noir:
@@ -209,26 +243,34 @@ class Echiquier:
         return coups
 
     def deplacer(self, piece: Piece, pos: tuple):
-        """Effectue le déplacement réel"""
-        cible = self.get_piece(pos)
-        if cible:
-            self.pieces.remove(cible)
+        """Effectue le déplacement réel d'une pièce
+        
+        Args:
+            piece (Piece): la pièce qui effectue le déplacement
+            pos (tuple): la position d'arrivée
+        """
+        arrivee = self.get_piece(pos)
+        if arrivee:
+            self.pieces.remove(arrivee)
         piece.position = pos
         piece.mouvements_effectues += 1
 
-    # --- Boucle de jeu ---
 
     def jouer(self):
         tour_noir = False # Les blancs commencent
         
         while True:
             os.system('cls' if os.name == 'nt' else 'clear')
+
+            tour = 0
+            print(f"Tour {tour}\n")
             print(self)
-            
+            tour += 1
+
             joueur = "Noir" if tour_noir else "Blanc"
-            print(f"C'est au tour des {joueur}s.")
+            print(f"C'est au tour des {joueur}s")
             
-            # Vérification Echec / Mat / Pat
+            # Vérification Echec / Echec et Mat / Pat
             if self.est_en_echec(tour_noir):
                 print(f"ECHEC aux {joueur}s !")
                 if not self.coups_legaux(tour_noir):
@@ -257,16 +299,19 @@ class Echiquier:
                 depart = (col_dep, lig_dep)
                 arrivee = (col_arr, lig_arr)
                 
+                # Position hors du plateau
                 if not self.pos_valide(depart) or not self.pos_valide(arrivee):
                     input("Position hors du plateau. Appuyez sur Entrée...")
                     continue
                     
                 piece = self.get_piece(depart)
                 
+                # Position sans pièce
                 if not piece:
                     input("Pas de pièce à cette position. Appuyez sur Entrée...")
                     continue
-                    
+                
+                # Pièce adverse
                 if piece.est_noir != tour_noir:
                     input("Ce n'est pas votre pièce ! Appuyez sur Entrée...")
                     continue
@@ -281,10 +326,10 @@ class Echiquier:
                     input("Ce coup vous met en échec ! Appuyez sur Entrée...")
                     continue
                 
-                # Exécution
                 self.deplacer(piece, arrivee)
                 
-                # Promotion du pion (simple: en Reine automatiquement)
+                # Lorsque le pion atteint l'extrémité adverse, il peut se transformer en une autre pièce 
+                # (automatique en Reine pour la simplicité)
                 if isinstance(piece, Pion):
                     if (piece.est_noir and piece.position[1] == 0) or (not piece.est_noir and piece.position[1] == 7):
                         self.pieces.remove(piece)
