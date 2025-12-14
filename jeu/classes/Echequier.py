@@ -280,7 +280,10 @@ class Echiquier:
 
             coup = input("Entrez votre coup (ex: e2e4) ou 'q' pour quitter: ").strip().lower()
             if coup == 'q':
-                break
+                if tour_noir:
+                    return "abandon noir"
+                else:
+                    return "abandon blanc"
             if len(coup) != 4:
                 input("Format invalide. Appuyez sur Entrée...")
                 continue

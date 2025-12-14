@@ -2,10 +2,9 @@ import json
 import os
 from datetime import datetime
 
-
 def _log_path() -> str:
     base = os.path.dirname(__file__)
-    return os.path.abspath(os.path.join(base, '..', 'parties.json'))
+    return os.path.abspath(os.path.join(base, '.', 'parties.json'))
 
 
 def enregistrer_partie(pseudo_blanc: str, pseudo_noir: str, pseudo_gagnant: str | None) -> None:

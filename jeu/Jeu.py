@@ -1,6 +1,6 @@
 from classes.Echequier import Echiquier
 from classes.Joueur import Joueur
-from classes.Historique import enregistrer_partie
+from Historique import enregistrer_partie
 
 class Jeu():
     def __init__(self, joueur1, joueur2) -> None:
@@ -14,12 +14,14 @@ class Jeu():
         self.joueur1 = Joueur(pseudo_blanc, est_noir=False)
         self.joueur2 = Joueur(pseudo_noir, est_noir=True)
 
-        self.echiquier.jouer()
-
-        gagnant = self.echiquier.jouer(self.joueur1, self.joueur2) # Gagnant: None (nul), True (noir), False (blanc)
-        if gagnant is None:
+        resultat = self.echiquier.jouer(self.joueur1, self.joueur2)
+        if resultat == "abandon blanc":
+            pseudo_gagnant = "Abandon " + pseudo_blanc + ". Victoire " + pseudo_noir
+        elif resultat == "abandon noir":
+            pseudo_gagnant = "Abandon " + pseudo_noir + ". Victoire " + pseudo_blanc
+        elif resultat is None:
             pseudo_gagnant = None
-        elif gagnant:
+        elif resultat:
             pseudo_gagnant = pseudo_noir
         else:
             pseudo_gagnant = pseudo_blanc
