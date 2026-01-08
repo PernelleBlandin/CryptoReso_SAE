@@ -1,4 +1,5 @@
 from Jeu import * 
+from Historique import enregistrer_partie
 import socket 
 
 class Session:
@@ -20,13 +21,22 @@ class Session:
                 self.file.flush()
                 pseudoBlanc = self.file.readline().strip()
                 self.joueur1 = Joueur(pseudoBlanc, False)
+                self.partie.joueur1 = self.joueur1
+
                 self.file.write("Donner un nom pour le joueur Noir : " + "\n")
                 self.file.flush()
                 pseudoNoir = self.file.readline().strip()
                 self.joueur2 = Joueur(pseudoNoir, True)
+                self.partie.joueur2 = self.joueur2
 
             self.file.write("Début de la partie..." + "\n")
             self.file.flush()
+            
+            resultat = self.partie.lancer_pour_serveur(self.file)
+            
+            pseudo_gagnant = self.partie.get_pseudo_gagnant(resultat, self.joueur1.pseudo, self.joueur2.pseudo)
+            enregistrer_partie(self.joueur1.pseudo, self.joueur2.pseudo, pseudo_gagnant)
+
             line = self.file.readline().strip()
             print("Commande reçue : " + line)
             if line == "quit":

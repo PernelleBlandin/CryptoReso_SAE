@@ -1,6 +1,5 @@
 from classes.Echequier import Echiquier
 from classes.Joueur import Joueur
-from Historique import enregistrer_partie
 
 class Jeu():
     def __init__(self, joueur1, joueur2) -> None:
@@ -15,22 +14,26 @@ class Jeu():
         self.joueur2 = Joueur(pseudo_noir, est_noir=True)
 
         resultat = self.echiquier.jouer(self.joueur1, self.joueur2)
+        pseudo_gagnant = self.get_pseudo_gagnant(resultat, pseudo_blanc, pseudo_noir)
+
+        return resultat
+
+    def get_pseudo_gagnant(self, resultat, pseudo_blanc, pseudo_noir):
         if resultat == "abandon blanc":
-            pseudo_gagnant = "Abandon " + pseudo_blanc + ". Victoire " + pseudo_noir
+            return "Abandon " + pseudo_blanc + ". Victoire " + pseudo_noir
         elif resultat == "abandon noir":
-            pseudo_gagnant = "Abandon " + pseudo_noir + ". Victoire " + pseudo_blanc
+            return "Abandon " + pseudo_noir + ". Victoire " + pseudo_blanc
         elif resultat is None:
-            pseudo_gagnant = None
+            return None
         elif resultat:
-            pseudo_gagnant = pseudo_noir
-        else:
-            pseudo_gagnant = pseudo_blanc
-        enregistrer_partie(pseudo_blanc, pseudo_noir, pseudo_gagnant)
+            return pseudo_noir
+        return pseudo_blanc
 
-    def lancer_pour_serveur(self):
-        print("À implémenter...")
-
+    def lancer_pour_serveur(self, file):
+        # Cette méthode devra appeler une version de echiquier.jouer adaptée au réseau
+        return self.echiquier.jouer_serveur(file)
 
 if __name__ == "__main__":
     jeu = Jeu(None, None)
-    jeu.lancer()
+    res = jeu.lancer()
+    print(f"Fin de partie, résultat : {res}")
