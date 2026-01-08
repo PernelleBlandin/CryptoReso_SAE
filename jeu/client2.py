@@ -1,14 +1,22 @@
 import socket
 import constantes
+from serveur import serveur
+from session import session
 
-def client(host:str, port:int):
+def client2(host:str, port:int):
     sock = socket.socket()
     sock.connect((host, port))
     f = sock.makefile(mode="rw")
 
     mess = ""
     while True:
-        if mess == "quit": 
+        mess = input()
+        if mess == "play":
+            session.play()
+            print(f"Deplacement de {case_src} à {case_dest}")
+
+
+        elif mess == "quit": 
             break
         retour = f.readline().strip()
         mess = input(retour)
@@ -19,4 +27,4 @@ def client(host:str, port:int):
     sock.shutdown(socket.SHUT_RDWR)
     sock.close()
 
-client(constantes.IP, constantes.PORT)
+client2(constantes.IP, constantes.PORT)
