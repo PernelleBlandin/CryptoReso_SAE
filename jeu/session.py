@@ -34,58 +34,45 @@ class Session:
 
             # On récupère les 3 parties de la commande
             line = self.file.readline().strip()
+            if not line:
+                break
+                
             parts = line.split()
+            if not parts:
+                continue
+                
             cmd = parts[0].lower()
 
             print("Commande reçue : " + line)
 
-            if line == "register":
-                print("Pseudo du joueur Blanc : ")
-                # envoie au joueur 1 sur client1
-                
-
-                
-            if line == "connect":
-                print("A faire")
-                print("Votre pseudo : ")
-                print("Votre mot de passe : ")
-                
-
-            elif line == "play":
-                self.file.write()
-                self.file.flush()
-
-            elif line == "leave":
-                self.file.write("leave\n")
-                self.file.flush()
-                break
-
-            elif line == "quit":
+            if cmd == "quit":
                 fini = True
+
             elif cmd == "play":
                 if len(parts) == 3:
                     res = self.partie.valider_et_deplacer(parts[1], parts[2], self.tour_noir)
                     if res == "OK":
                         self.tour_noir = not self.tour_noir
-                    self.file.write(res + "\n")
+                    self.file.write(res + " (C'est au tour des " + ("Noirs" if self.tour_noir else "Blancs") + ")\n")
                 else:
-                    self.file.write("Format invalide (ex: a2 a4). Appuyez sur Entrée...\n")
-                self.file.flush()
-            else:
-                self.file.write("ERREUR Commande inconnue\n")
-                self.file.flush()
+                    self.file.write("ERREUR Format: play caseSrc caseDst\n")
 
-            if line == "replay":
+            elif cmd == "leave":
+                self.file.write("Au revoir !\n")
+                fini = True
+
+            elif cmd == "replay":
                 print("A faire")
 
-            if line == "new":
+            elif cmd == "new":
                 print("A faire")
                 # self.joueur1 = Joueur(pseudo_blanc, est_noir=False)
                 # self.joueur2 = Joueur(pseudo_noir, est_noir=True)
 
             else:
-                self.file.write("err\n")
-                self.file.flush()
+                self.file.write("ERREUR Commande inconnue\n")
+            
+            self.file.flush()
 
         print("Fermeture de la session actuelle...")
         self.file.close()
