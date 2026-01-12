@@ -7,7 +7,7 @@ from threading import Thread
 class Serveur:
    def __init__(self):
        self.counter = 0
-       self.sessions_connectees = []
+       self.sessions_connectees = set()
 
 
    def mainServeur(self, port):
@@ -17,7 +17,8 @@ class Serveur:
        sock.listen(10)
        while True:
            cli, _ = sock.accept()
-           sess= Session(self, cli)
+           sess = Session(self, cli)
+           self.sessions_connectees.add(sess)
            t = Thread(target=sess.mainSession)
            t.start()
            print("au prochain")
