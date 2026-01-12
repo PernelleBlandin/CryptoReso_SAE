@@ -1,15 +1,16 @@
-from Jeu import * 
-import socket 
+from Jeu import *
+import socket
+
 
 class Session:
-    def __init__(self, serveur, sock):
-        self.serveur = serveur
-        self.socket = sock
-        self.file=sock.makefile(mode="rw")
-        self.counter = 0
-        self.joueur1 = None
-        self.joueur2 = None
-        self.partie = Jeu(self.joueur1, self.joueur2)
+   def __init__(self, serveur, sock):
+       self.serveur = serveur
+       self.socket = sock
+       self.file=sock.makefile(mode="rw")
+       self.counter = 0
+       self.joueur1 = None
+       self.joueur2 = None
+       self.partie = Jeu(self.joueur1, self.joueur2)
         self.tour_noir = False
 
     def mainSession(self):
@@ -34,7 +35,7 @@ class Session:
 
             # On récupère les 3 parties de la commande
             line = self.file.readline().strip()
-            if not line:
+            if line == "quit":
                 break
                 
             parts = line.split()
