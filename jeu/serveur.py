@@ -1,20 +1,24 @@
 import socket 
 import constantes
 from session import *
+from GestionnaireDeSessions import GestionnaireDeSessions
 
 class Serveur:
-    def __init__(self):
-        self.counter = 0
 
-    def mainServeur(self, port):
-        sock= socket.socket()
-        sock.bind(("0.0.0.0", port))
-        sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        sock.listen(10)
+    def __init__(self, host, port):
+        self.counter += 0
+        self.sock = socket.socket()
+        self.sock.bind((host, port))
+        self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.sock.listen(10)
+        self.gestionnaire = GestionnaireDeSessions(host, port)
+
+    def mainServeur(self):
         while True:
-            cli, _ = sock.accept()
-            sess= Session(self, cli)
-            sess.mainSession()
+            cli, _ = self.sock.accept()
+            self.counter += 1
+            session = self.gestionnaire.creer_session("client n°" + self.counter)
+            print(self.counter)
 
 if __name__ == "__main__":
-    Serveur().mainServeur(constantes.PORT)
+    Serveur(constantes.IP, constantes.PORT).mainServeur()

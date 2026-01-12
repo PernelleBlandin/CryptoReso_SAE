@@ -1,11 +1,28 @@
+from threading import Thread
+from io import TextIOWrapper
 from Jeu import * 
 import socket 
 
-class Session:
-    def __init__(self, serveur, sock):
-        self.serveur = serveur
-        self.socket = sock
-        self.file=sock.makefile(mode="rw")
+class Session(Thread):
+    def __init__(self, file:TextIOWrapper):
+        self.file=file
+
+    def communiquer(self):
+        while True:
+            if mess == "quit":
+                break
+            recu = self.file.readline.strip()
+            mess = input(recu)
+            self.file.write(mess + "\n")
+            self.file.flush()
+        self.file.close()
+
+
+
+
+
+
+"""
         self.counter = 0
         self.joueur1 = None
         self.joueur2 = None
@@ -34,4 +51,4 @@ class Session:
         print("Fermeture de la session actuelle...")
         self.file.close()
         self.socket.shutdown(socket.SHUT_RDWR)
-        self.socket.close()
+        self.socket.close()"""
