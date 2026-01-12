@@ -1,11 +1,13 @@
 import socket
 import constantes
 from session import *
+from threading import Thread
 
 
 class Serveur:
    def __init__(self):
        self.counter = 0
+       self.sessions_connectees = []
 
 
    def mainServeur(self, port):
@@ -16,7 +18,9 @@ class Serveur:
        while True:
            cli, _ = sock.accept()
            sess= Session(self, cli)
-           sess.mainSession()
+           t = Thread(target=sess.mainSession)
+           t.start()
+           print("au prochain")
 
 
 if __name__ == "__main__":
