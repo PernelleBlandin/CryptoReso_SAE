@@ -255,6 +255,14 @@ class Echiquier:
         piece.position = pos
         piece.mouvements_effectues += 1
 
+        # Lorsque le pion atteint l'extrémité adverse, il peut se transformer en une autre pièce 
+        # (automatique en Reine pour la simplicité)
+        if isinstance(piece, Pion):
+            if (piece.est_noir and piece.position[1] == 0) or (not piece.est_noir and piece.position[1] == 7):
+                self.pieces.remove(piece)
+                self.ajouter_piece(Reine(piece.est_noir, piece.position, 0))
+                print("Promotion en Reine !")
+
 
     def jouer(self, joueur_blanc=None, joueur_noir=None):
         tour_noir = False # Les blancs commencent
@@ -271,71 +279,66 @@ class Echiquier:
             if self.est_en_echec(tour_noir):
                 print(f"ECHEC aux {joueur}s !")
                 if not self.coups_legaux(tour_noir):
-                    print(f"ECHEC ET MAT ! Les {'Blancs' if tour_noir else 'Noirs'} gagnent !")
+                    print(f"ECHEC ET MAT ! Les {'Blancs' if tour_noir else 'Noirs'} gagnent !\n")
                     return tour_noir  # True si noir gagne, False si blanc gagne
             else:
                 if not self.coups_legaux(tour_noir):
                     print("PAT ! Match nul.")
                     return None  # Match nul
 
-            coup = input("Entrez votre coup (ex: e2e4) ou 'q' pour quitter: ").strip().lower()
+            coup = input("Entrez votre coup (ex: a2 a4) ou 'q' pour quitter: \n").strip().lower()
             if coup == 'q':
                 if tour_noir:
                     return "abandon noir"
                 else:
                     return "abandon blanc"
-            if len(coup) != 4:
-                input("Format invalide. Appuyez sur Entrée...")
+            
+            parts = coup.split()
+            if len(parts) != 2 or len(parts[0]) != 2 or len(parts[1]) != 2:
+                input("Format invalide (ex: a2 a4). Appuyez sur Entrée...\n")
                 continue
                 
             try:
-                col_dep = ord(coup[0]) - ord('a')
-                lig_dep = int(coup[1]) - 1
-                col_arr = ord(coup[2]) - ord('a')
-                lig_arr = int(coup[3]) - 1
+                src, dst = parts[0], parts[1]
+                col_dep = ord(src[0]) - ord('a')
+                lig_dep = int(src[1]) - 1
+                col_arr = ord(dst[0]) - ord('a')
+                lig_arr = int(dst[1]) - 1
                 
                 depart = (col_dep, lig_dep)
                 arrivee = (col_arr, lig_arr)
                 
                 # Position hors du plateau
                 if not self.pos_valide(depart) or not self.pos_valide(arrivee):
-                    input("Position hors du plateau. Appuyez sur Entrée...")
+                    input("Position hors du plateau. Appuyez sur Entrée...\n")
                     continue
                     
                 piece = self.get_piece(depart)
                 
                 # Position sans pièce
                 if not piece:
-                    input("Pas de pièce à cette position. Appuyez sur Entrée...")
+                    input("Pas de pièce à cette position. Appuyez sur Entrée...\n")
                     continue
                 
                 # Pièce adverse
                 if piece.est_noir != tour_noir:
-                    input("Ce n'est pas votre pièce ! Appuyez sur Entrée...")
+                    input("Ce n'est pas votre pièce ! Appuyez sur Entrée...\n")
                     continue
                 
                 # Validation du coup
                 coups_possibles = self.recuperer_coups_possibles(piece)
                 if arrivee not in coups_possibles:
-                    input("Coup impossible pour cette pièce. Appuyez sur Entrée...")
+                    input("Coup impossible pour cette pièce. Appuyez sur Entrée...\n")
                     continue
                     
                 if not self.simuler_coup(piece, arrivee):
-                    input("Ce coup vous met en échec ! Appuyez sur Entrée...")
+                    input("Ce coup vous met en échec ! Appuyez sur Entrée...\n")
                     continue
                 
                 self.deplacer(piece, arrivee)
                 
-                # Lorsque le pion atteint l'extrémité adverse, il peut se transformer en une autre pièce 
-                # (automatique en Reine pour la simplicité)
-                if isinstance(piece, Pion):
-                    if (piece.est_noir and piece.position[1] == 0) or (not piece.est_noir and piece.position[1] == 7):
-                        self.pieces.remove(piece)
-                        self.ajouter_piece(Reine(piece.est_noir, piece.position, 0))
-                        print("Promotion en Reine !")
-                
                 tour_noir = not tour_noir
                 
             except ValueError:
-                input("Erreur de format. Utilisez a-h et 1-8 (ex: e2e4). Appuyez sur Entrée...")
+                input("Erreur de format. Utilisez a-h et 1-8 (ex: e2 e4). Appuyez sur Entrée...\n")
                 continue
