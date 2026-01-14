@@ -4,18 +4,17 @@ from Historique import enregistrer_partie
 
 
 class Jeu():
-   def __init__(self, joueur1, joueur2) -> None:
+    def __init__(self, joueur1, joueur2) -> None:
        self.joueur1 = joueur1
        self.joueur2 = joueur2
        self.echiquier = Echiquier()
 
 
-   def lancer(self):
+    def lancer(self):
        pseudo_blanc = input("Pseudo du joueur Blanc : ").strip()
        pseudo_noir = input("Pseudo du joueur Noir : ").strip()
        self.joueur1 = Joueur(pseudo_blanc, est_noir=False)
        self.joueur2 = Joueur(pseudo_noir, est_noir=True)
-
 
        resultat = self.echiquier.jouer(self.joueur1, self.joueur2)
        if resultat == "abandon blanc":
@@ -31,9 +30,8 @@ class Jeu():
        enregistrer_partie(pseudo_blanc, pseudo_noir, pseudo_gagnant)
 
 
-   def lancer_pour_serveur(self):
+    def lancer_pour_serveur(self):
        print("À implémenter...")
-
 
 
     def valider_et_deplacer(self, src_str, dst_str, est_noir):

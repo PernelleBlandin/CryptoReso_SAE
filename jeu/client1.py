@@ -10,12 +10,18 @@ def client(host:str, port:int):
 
    mess = ""
    while True:
-       if mess == "quit":
+       line = f.readline()
+       if not line:
            break
-       retour = f.readline().strip()
-       mess = input(retour)
-       f.write(mess + "\n")
-       f.flush()
+       
+       if ":" in line or "tour des" in line:
+           mess = input(line.strip() + " ")
+           f.write(mess + "\n")
+           f.flush()
+           if mess.lower() in ["quit", "leave"]:
+               break
+       else:
+           print(line, end="")
 
 
    f.close()
