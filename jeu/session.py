@@ -38,10 +38,10 @@ class Session:
                 self.file.flush()
 
             line = self.file.readline().strip()
-            print("Commande reçue : " + (self.joueur2.pseudo if self.tour_noir else self.joueur1.pseudo) + " " + line)
-
-            if line == "quit":
+            if not line: # Le client s'est déconnecté
                 break
+
+            print("Commande reçue : " + (self.joueur2.pseudo if self.tour_noir else self.joueur1.pseudo) + " " + line)
 
             # On récupère les parties de la commande
             parts = line.split()
@@ -68,7 +68,7 @@ class Session:
                         self.tour_noir = not self.tour_noir
                     echiquier = "\n" + str(self.partie.echiquier) + "\n"
                     self.file.write(echiquier)
-                    self.file.write(res + " (C'est au tour des " + ("Noirs" if self.tour_noir else "Blancs") + ") : \n")
+                    self.file.write(res + ", C'est au tour des " + ("Noirs" if self.tour_noir else "Blancs") + " : \n")
                 else:
                     texte = "ERREUR (Format: play caseSrc caseDst). C'est au tour des " + ("Noirs" if self.tour_noir else "Blancs") + "\n"
                     self.file.write(texte)
