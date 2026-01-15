@@ -1,6 +1,5 @@
 from classes.Echequier import Echiquier
 from classes.Joueur import Joueur
-from Historique import enregistrer_partie
 
 
 class Jeu():
@@ -11,28 +10,27 @@ class Jeu():
 
 
     def lancer(self):
-       pseudo_blanc = input("Pseudo du joueur Blanc : ").strip()
-       pseudo_noir = input("Pseudo du joueur Noir : ").strip()
-       self.joueur1 = Joueur(pseudo_blanc, est_noir=False)
-       self.joueur2 = Joueur(pseudo_noir, est_noir=True)
+        pseudo_blanc = input("Pseudo du joueur Blanc : ").strip()
+        pseudo_noir = input("Pseudo du joueur Noir : ").strip()
+        self.joueur1 = Joueur(pseudo_blanc, est_noir=False)
+        self.joueur2 = Joueur(pseudo_noir, est_noir=True)
 
-       resultat = self.echiquier.jouer(self.joueur1, self.joueur2)
-       if resultat == "abandon blanc":
-           pseudo_gagnant = "Abandon " + pseudo_blanc + ". Victoire " + pseudo_noir
-       elif resultat == "abandon noir":
-           pseudo_gagnant = "Abandon " + pseudo_noir + ". Victoire " + pseudo_blanc
-       elif resultat is None:
-           pseudo_gagnant = None
-       elif resultat:
-           pseudo_gagnant = pseudo_noir
-       else:
-           pseudo_gagnant = pseudo_blanc
-       enregistrer_partie(pseudo_blanc, pseudo_noir, pseudo_gagnant)
+        resultat = self.echiquier.jouer(self.joueur1, self.joueur2)
+        pseudo_gagnant = self.get_pseudo_gagnant(resultat, pseudo_blanc, pseudo_noir)
+        enregistrer_partie(pseudo_blanc, pseudo_noir, pseudo_gagnant)
 
+        return resultat
 
-    def lancer_pour_serveur(self):
-       print("À implémenter...")
-
+    def get_pseudo_gagnant(self, resultat, pseudo_blanc, pseudo_noir):
+        if resultat == "abandon blanc":
+            return "Abandon " + pseudo_blanc + ". Victoire " + pseudo_noir
+        elif resultat == "abandon noir":
+            return "Abandon " + pseudo_noir + ". Victoire " + pseudo_blanc
+        elif resultat is None:
+            return None
+        elif resultat:
+            return pseudo_noir
+        return pseudo_blanc
 
     def valider_et_deplacer(self, src_str, dst_str, est_noir):
         """Valide et effectue un coup pour le serveur.
@@ -75,5 +73,7 @@ class Jeu():
 
 
 if __name__ == "__main__":
-   jeu = Jeu(None, None)
-   jeu.lancer()
+    jeu = Jeu(None, None)
+    res = jeu.lancer()
+    print(f"Fin de partie, résultat : {res}")
+

@@ -1,6 +1,6 @@
-from Jeu import *
-import socket
-
+from Jeu import * 
+from Historique import enregistrer_partie
+import socket 
 
 class Session:
     def __init__(self, serveur, sock):
@@ -22,18 +22,24 @@ class Session:
                 self.file.flush()
                 pseudoBlanc = self.file.readline().strip()
                 self.joueur1 = Joueur(pseudoBlanc, False)
+                self.partie.joueur1 = self.joueur1
+
                 self.file.write("Donner un nom pour le joueur Noir : " + "\n")
                 self.file.flush()
                 pseudoNoir = self.file.readline().strip()
                 self.joueur2 = Joueur(pseudoNoir, True)
-                
-                self.partie.joueur1 = self.joueur1
                 self.partie.joueur2 = self.joueur2
+                
                 self.file.write("Début de la partie..." + "\n")
                 echiquier = "\n" + str(self.partie.echiquier) + "\n"
                 self.file.write(echiquier)
                 self.file.write("C'est au tour des Blancs : \n")
                 self.file.flush()
+            
+            resultat = self.partie.lancer_pour_serveur(self.file)
+            pseudo_gagnant = self.partie.get_pseudo_gagnant(resultat, self.joueur1.pseudo, self.joueur2.pseudo)
+            enregistrer_partie(self.joueur1.pseudo, self.joueur2.pseudo, pseudo_gagnant)
+                
 
             # On récupère les 3 parties de la commande
             line = self.file.readline().strip()
