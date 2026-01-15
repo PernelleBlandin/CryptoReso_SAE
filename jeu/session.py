@@ -1,29 +1,55 @@
 from Jeu import *
 import socket
+from threading import Thread
 
 
-class Session:
-   def __init__(self, serveur, sock):
+class Session(Thread):
+    def __init__(self, serveur, sock):
+       super().__init__()
        self.serveur = serveur
        self.socket = sock
        self.file=sock.makefile(mode="rw")
        self.counter = 0
-       self.joueur1 = None
-       self.joueur2 = None
-       self.partie = Jeu(self.joueur1, self.joueur2)
+       self.nom = None
 
+    def envoyer_message(self, message):
+        print(message)
+        self.file.write(message + "\n")
+        self.file.flush()
+        print(message + " écrit")
 
-   def mainSession(self):
-        
+    def recuperer_entree(self, message)->str:
+        recu = ""
+        self.file.write(message + "\n")
+        self.file.flush()
+        print(message + " demandé")
+        while recu == "":
+            recu = self.file.readline().strip()
+            print("reçu : " + recu)
+        return recu
+
+    def run(self):
+        line = None
         print("Mise en place d'une nouvelle session...")
-        fini = False
-        while not fini:
-            if self.joueur1 == None:
-               self.file.write("Donner un nom pour le joueur Blanc : " + "\n")
-               self.file.flush()
-               pseudoBlanc = self.file.readline().strip()
-               self.joueur1 = Joueur(pseudoBlanc, False)
-               
+        while True:
+            if self.nom == None:
+               print("entree ici")
+               self.nom = self.recuperer_entree("Choisissez un pseudo ")
+               self.envoyer_message("Début de la recherche d'un joueur...")
+               self.serveur.mettre_en_attente(self)
+
+            if line == "quit":
+                break
+            else:
+                self.file.write("err\n")
+                self.file.flush()
+            #self.file.write("Hello I'm still here")
+            #self.file.flush()
+
+            line = self.file.readline().strip()
+            print("hello")
+            print("Ligne reçue : " + line)
+            """
             elif self.joueur2 == None:
                self.file.write("Donner un nom pour le joueur Noir : " + "\n")
                self.file.flush()
@@ -69,10 +95,7 @@ class Session:
                 print("A faire")
                 # self.joueur1 = Joueur(pseudo_blanc, est_noir=False)
                 # self.joueur2 = Joueur(pseudo_noir, est_noir=True)
-
-            else:
-                self.file.write("err\n")
-                self.file.flush()
+            """
 
 
         print("Fermeture de la session actuelle...")
