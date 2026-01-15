@@ -86,12 +86,17 @@ class Session:
                     self.file.write("ERR Aucune partie active\n")
 
             elif cmd == "replay":
-                print("A faire")
+                print("A faire, rejoue avec les memes joueurs")
 
             elif cmd == "new":
-                print("A faire")
-                # self.joueur1 = Joueur(pseudo_blanc, est_noir=False)
-                # self.joueur2 = Joueur(pseudo_noir, est_noir=True)
+                print("A faire, relance une nouvelle partie a la fin d'une partie")
+                if self.joueur1 is not None : #a completer pour que j1 et/ou j2 qui relance sans blocage
+                    self.file.write("Recherche d'un nouvel adversaire...\n")
+                    self.serveur.mettre_en_attente(self)
+                    self.file.write("Nouvel adversaire trouvé !\n")
+                    fini = True
+                else:
+                    self.file.write("ERR Aucun joueur trouvé\n")
 
             else:
                 texte = "ERREUR Commande inconnue. C'est au tour des " + ("Noirs" if self.tour_noir else "Blancs") + "\n"
