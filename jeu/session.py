@@ -39,8 +39,8 @@ class Session:
             line = self.file.readline().strip()
             print("Commande reçue : " + (self.joueur2.pseudo if self.tour_noir else self.joueur1.pseudo) + " " + line)
 
-            if line == "quit":
-                break
+            # if line == "quit":
+            #     break
 
             # On récupère les parties de la commande
             parts = line.split()
@@ -52,13 +52,15 @@ class Session:
             if cmd == "quit":
                 if self.joueur1 is not None:
                     if self.tour_noir:
-                        pseudo_gagnant = "Abandon " + self.joueur2.pseudo + ". Victoire " + self.joueur1.pseudo
+                        pseudo_gagnant = "Abandon " + self.joueur2.pseudo + ". Victoire " + self.joueur1.pseudo 
                     else:
                         pseudo_gagnant = "Abandon " + self.joueur1.pseudo + ". Victoire " + self.joueur2.pseudo
                     enregistrer_partie(self.joueur1.pseudo, self.joueur2.pseudo, pseudo_gagnant)
-                self.file.write("OK\n")
-                self.file.flush()
-                fini = True
+                    self.file.write("OK déconnexion du serveur\n")
+                    self.file.flush()
+                    fini = True
+                
+
 
             elif cmd == "play":
                 if len(parts) == 3:
