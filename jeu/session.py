@@ -1,6 +1,7 @@
-from Jeu import * 
+from Jeu import *
 from Historique import enregistrer_partie
-import socket 
+import socket
+
 
 class Session:
     def __init__(self, serveur, sock):
@@ -35,26 +36,29 @@ class Session:
                 self.file.write(echiquier)
                 self.file.write("C'est au tour des Blancs : \n")
                 self.file.flush()
-            
-            resultat = self.partie.lancer()
-            pseudo_gagnant = self.partie.get_pseudo_gagnant(resultat, self.joueur1.pseudo, self.joueur2.pseudo)
-            enregistrer_partie(self.joueur1.pseudo, self.joueur2.pseudo, pseudo_gagnant)
-                
 
-            # On récupère les 3 parties de la commande
             line = self.file.readline().strip()
+            print("Commande reçue : " + (self.joueur2.pseudo if self.tour_noir else self.joueur1.pseudo) + " " + line)
+
             if line == "quit":
                 break
-                
+
+            # On récupère les parties de la commande
             parts = line.split()
             if not parts:
                 continue
                 
             cmd = parts[0].lower()
 
-            print("Commande reçue : " + ("Noirs " if self.tour_noir else "Blancs ") + line)
-
             if cmd == "quit":
+                if self.joueur1 is not None:
+                    if self.tour_noir:
+                        pseudo_gagnant = "Abandon " + self.joueur2.pseudo + ". Victoire " + self.joueur1.pseudo
+                    else:
+                        pseudo_gagnant = "Abandon " + self.joueur1.pseudo + ". Victoire " + self.joueur2.pseudo
+                    enregistrer_partie(self.joueur1.pseudo, self.joueur2.pseudo, pseudo_gagnant)
+                self.file.write("OK\n")
+                self.file.flush()
                 fini = True
 
             elif cmd == "play":
@@ -70,8 +74,16 @@ class Session:
                     self.file.write(texte)
 
             elif cmd == "leave":
-                self.file.write("Au revoir !\n")
-                fini = True
+                if self.joueur1 is not None:
+                    if self.tour_noir:
+                        pseudo_gagnant = "Abandon " + self.joueur2.pseudo + ". Victoire " + self.joueur1.pseudo
+                    else:
+                        pseudo_gagnant = "Abandon " + self.joueur1.pseudo + ". Victoire " + self.joueur2.pseudo
+                    enregistrer_partie(self.joueur1.pseudo, self.joueur2.pseudo, pseudo_gagnant)
+                    self.file.write("OK\n")
+                    fini = True
+                else:
+                    self.file.write("ERR Aucune partie active\n")
 
             elif cmd == "replay":
                 print("A faire")

@@ -1,5 +1,6 @@
 from classes.Echequier import Echiquier
 from classes.Joueur import Joueur
+from Historique import enregistrer_partie
 
 
 class Jeu():
@@ -16,24 +17,21 @@ class Jeu():
         self.joueur2 = Joueur(pseudo_noir, est_noir=True)
 
         resultat = self.echiquier.jouer(self.joueur1, self.joueur2)
-        pseudo_gagnant = self.get_pseudo_gagnant(resultat, pseudo_blanc, pseudo_noir)
+        if resultat == "abandon blanc":
+           pseudo_gagnant = "Abandon " + pseudo_blanc + ". Victoire " + pseudo_noir
+        elif resultat == "abandon noir":
+           pseudo_gagnant = "Abandon " + pseudo_noir + ". Victoire " + pseudo_blanc
+        elif resultat is None:
+           pseudo_gagnant = None
+        elif resultat:
+           pseudo_gagnant = pseudo_noir
+        else:
+           pseudo_gagnant = pseudo_blanc
         enregistrer_partie(pseudo_blanc, pseudo_noir, pseudo_gagnant)
 
-        return resultat
-
-    def get_pseudo_gagnant(self, resultat, pseudo_blanc, pseudo_noir):
-        if resultat == "abandon blanc":
-            return "Abandon " + pseudo_blanc + ". Victoire " + pseudo_noir
-        elif resultat == "abandon noir":
-            return "Abandon " + pseudo_noir + ". Victoire " + pseudo_blanc
-        elif resultat is None:
-            return None
-        elif resultat:
-            return pseudo_noir
-        return pseudo_blanc
 
     def valider_et_deplacer(self, src_str, dst_str, est_noir):
-        """Valide et effectue un coup pour le serveur.
+        """Valide et effectue un coup pour le serveur
         
         Returns:
             str: le résultat du coup

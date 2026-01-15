@@ -15,7 +15,7 @@ class Serveur:
        sock.listen(10)
        while True:
            cli, _ = sock.accept()
-           sess= Session(self, cli)
+           sess = Session(self, cli)
            sess.mainSession()
 
 
