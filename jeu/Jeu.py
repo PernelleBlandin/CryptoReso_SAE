@@ -30,12 +30,8 @@ class Jeu():
        enregistrer_partie(pseudo_blanc, pseudo_noir, pseudo_gagnant)
 
 
-    def lancer_pour_serveur(self):
-       print("À implémenter...")
-
-
     def valider_et_deplacer(self, src_str, dst_str, est_noir):
-        """Valide et effectue un coup pour le serveur.
+        """Valide et effectue un coup pour le serveur
         
         Returns:
             str: le résultat du coup

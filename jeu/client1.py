@@ -5,7 +5,7 @@ import constantes
 def client(host:str, port:int):
    sock = socket.socket()
    sock.connect((host, port))
-   f = sock.makefile(mode="rw")
+   f = sock.makefile(mode="rw", encoding="utf-8")
 
 
    mess = ""
