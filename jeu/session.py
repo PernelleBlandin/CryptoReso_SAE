@@ -36,7 +36,7 @@ class Session:
                 self.file.write("C'est au tour des Blancs : \n")
                 self.file.flush()
             
-            resultat = self.partie.lancer_pour_serveur(self.file)
+            resultat = self.partie.lancer()
             pseudo_gagnant = self.partie.get_pseudo_gagnant(resultat, self.joueur1.pseudo, self.joueur2.pseudo)
             enregistrer_partie(self.joueur1.pseudo, self.joueur2.pseudo, pseudo_gagnant)
                 
