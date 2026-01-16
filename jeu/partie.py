@@ -22,9 +22,9 @@ class Partie:
 
     def demander_au_joueur_courant(self, message):
         if not self.tour_noir:
-            self.joueurBlanc.recuperer_entree(message)
+            return self.joueurBlanc.recuperer_entree(message)
         else:
-            self.joueurNoir.recuperer_entree(message)
+            return self.joueurNoir.recuperer_entree(message)
 
     def lancer(self):
         self.envoyer_aux_deux("Début de la partie !")
@@ -64,7 +64,7 @@ class Partie:
                         self.tour_noir = not self.tour_noir
                     echiquier = "\n" + str(self.partie.echiquier) + "\n"
                     self.envoyer_au_joueur_courant(echiquier)
-                    self.demander_au_joueur_courant(res + ", C'est au tour des " + ("Noirs" if self.tour_noir else "Blancs") + " : \n")
+                    line = self.demander_au_joueur_courant(res + ", C'est au tour des " + ("Noirs" if self.tour_noir else "Blancs") + " : \n")
                 else:
                     texte = "ERREUR (Format: play caseSrc caseDst). C'est au tour des " + ("Noirs" if self.tour_noir else "Blancs") + "\n"
                     self.envoyer_au_joueur_courant(texte)
@@ -91,7 +91,7 @@ class Partie:
 
             else:
                 texte = "ERREUR Commande inconnue. C'est au tour des " + ("Noirs" if self.tour_noir else "Blancs") + "\n"
-                self.demander_au_joueur_courant(texte)
+                line = self.demander_au_joueur_courant(texte)
 
 
         print("Fermeture des sessions...")

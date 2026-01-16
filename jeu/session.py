@@ -52,4 +52,5 @@ class Session(Thread):
             #self.file.flush()
 
             line = self.file.readline().strip()
+
             print("Ligne reçue : " + line)
