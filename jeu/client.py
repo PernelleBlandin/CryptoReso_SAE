@@ -11,10 +11,11 @@ def client(host:str, port:int):
    mess = ""
    while True:
        line = f.readline()
+       #print("récupéré : " + line)
        if not line:
            break
        
-       if ":" in line or "tour des" in line:
+       if ":" in line or "tour des" or "Choisissez" or "Attente" in line:
            mess = input(line.strip() + " ")
            f.write(mess + "\n")
            f.flush()
