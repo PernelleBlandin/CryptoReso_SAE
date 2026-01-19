@@ -13,7 +13,7 @@ class Session(Thread):
        self.pseudo = None
 
     def envoyer_message(self, message):
-        print(message)
+        #print(message)
         self.file.write(message + "\n")
         self.file.flush()
         print(message + " écrit")
@@ -25,7 +25,8 @@ class Session(Thread):
         print(message + " demandé")
         while recu == "":
             recu = self.file.readline().strip()
-            print("reçu : " + recu)
+            print("toujours pas de line reçue..." + recu)
+            #print("reçu : " + recu)
         return recu
 
     def fermer_session(self):
@@ -38,7 +39,7 @@ class Session(Thread):
         print("Mise en place d'une nouvelle session...")
         while True:
             if self.pseudo == None:
-               print("entree ici")
+               #print("entree ici")
                self.pseudo = self.recuperer_entree("Choisissez un pseudo ")
                self.envoyer_message("Début de la recherche d'un joueur...")
                self.serveur.mettre_en_attente(self)
@@ -51,6 +52,6 @@ class Session(Thread):
             #self.file.write("Hello I'm still here")
             #self.file.flush()
 
-            line = self.file.readline().strip()
-
-            print("Ligne reçue : " + line)
+            #line = self.file.readline().strip()
+#
+            #print("Ligne reçue : " + line)

@@ -2,9 +2,9 @@ from jeu import Jeu
 from session import *
 
 class Partie:
-    def __init__(self, joueur1:Session, joueur2:Session):
-        self.joueurBlanc = joueur1
-        self.joueurNoir = joueur2
+    def __init__(self, joueurBlanc:Session, joueurNoir:Session):
+        self.joueurBlanc = joueurBlanc
+        self.joueurNoir = joueurNoir
         self.joueurBlanc.envoyer_message("Initialisation d'une partie avec " + self.joueurNoir.pseudo)
         self.joueurNoir.envoyer_message("Initialisation d'une partie avec " + self.joueurBlanc.pseudo)
         self.partie = Jeu(self.joueurBlanc, self.joueurNoir) # que prend Jeu en paramètre ?
@@ -29,69 +29,71 @@ class Partie:
     def lancer(self):
         self.envoyer_aux_deux("Début de la partie !")
         fini = False
-        line = "yfgfg"
+        line = None
         while not fini: 
+            if line is not None:
+                #line = self.demander_au_joueur_courant("Attente")
+                if not line:
+                    print("On est passé là")
+                    break
+                
+                print("Commande reçue : " + (self.joueurNoir.pseudo if self.tour_noir else self.joueurBlanc.pseudo) + " " + str(line))
 
-            #line = self.demander_au_joueur_courant("Attente")
-            if not line:
-                break
-            
-            print("Commande reçue : " + (self.joueurNoir.pseudo if self.tour_noir else self.joueurBlanc.pseudo) + " " + str(line))
+                # On récupère les parties de la commande
+                parts = line.split()
+                print(parts)
 
-            # On récupère les parties de la commande
-            parts = line.split()
-            print(parts)
+                #if not parts:
+                #    continue
 
-            if not parts:
-                continue
+                cmd = parts[0].lower()
 
-            cmd = parts[0].lower()
-
-            if cmd == "quit":
-                if self.joueurBlanc is not None:
-                    if self.tour_noir:
-                        pseudo_gagnant = "Abandon " + self.joueurNoir.pseudo + ". Victoire " + self.joueurBlanc.pseud
-                    else:
-                        pseudo_gagnant = "Abandon " + self.joueurBlanc.pseudo + ". Victoire " + self.joueurNoir.pseudo
-                    enregistrer_partie(self.joueurBlanc.pseudo, self.joueurNoir.pseudo, pseudo_gagnant)
-                    self.envoyer_au_joueur_courant("OK")
-                fini = True
-
-            elif cmd == "play":
-                if len(parts) == 3:
-                    res = self.partie.valider_et_deplacer(parts[1], parts[2], self.tour_noir)
-                    if res == "OK":
-                        self.tour_noir = not self.tour_noir
-                    echiquier = "\n" + str(self.partie.echiquier) + "\n"
-                    self.envoyer_au_joueur_courant(echiquier)
-                    line = self.demander_au_joueur_courant(res + ", C'est au tour des " + ("Noirs" if self.tour_noir else "Blancs") + " : \n")
-                else:
-                    texte = "ERREUR (Format: play caseSrc caseDst). C'est au tour des " + ("Noirs" if self.tour_noir else "Blancs") + "\n"
-                    self.envoyer_au_joueur_courant(texte)
-
-            elif cmd == "leave":
-                if self.joueur1 is not None:
-                    if self.tour_noir:
-                        pseudo_gagnant = "Abandon " + self.joueur2.pseudo + ". Victoire " + self.joueur1.pseudo
-                    else:
-                        pseudo_gagnant = "Abandon " + self.joueur1.pseudo + ". Victoire " + self.joueur2.pseudo
-                    enregistrer_partie(self.joueur1.pseudo, self.joueur2.pseudo, pseudo_gagnant)
-                    self.envoyer_au_joueur_courant("OK")
+                if cmd == "quit":
+                    if self.joueurBlanc is not None:
+                        if self.tour_noir:
+                            pseudo_gagnant = "Abandon " + self.joueurNoir.pseudo + ". Victoire " + self.joueurBlanc.pseud
+                        else:
+                            pseudo_gagnant = "Abandon " + self.joueurBlanc.pseudo + ". Victoire " + self.joueurNoir.pseudo
+                        enregistrer_partie(self.joueurBlanc.pseudo, self.joueurNoir.pseudo, pseudo_gagnant)
+                        self.envoyer_au_joueur_courant("OK")
                     fini = True
+
+                elif cmd == "play":
+                    if len(parts) == 3:
+                        res = self.partie.valider_et_deplacer(parts[1], parts[2], self.tour_noir)
+                        if res == "OK":
+                            self.tour_noir = not self.tour_noir
+                        echiquier = "\n" + str(self.partie.echiquier) + "\n"
+                        self.envoyer_au_joueur_courant(echiquier)
+                        line = self.demander_au_joueur_courant(res + ", C'est au tour des " + ("Noirs" if self.tour_noir else "Blancs") + " : \n")
+                    else:
+                        self.demander_au_joueur_courant("ERREUR (Format: play caseSrc caseDst). C'est au tour des " + ("Noirs" if self.tour_noir else "Blancs") + "\n")
+
+                elif cmd == "leave":
+                    if self.joueurBlanc is not None:
+                        if self.tour_noir:
+                            pseudo_gagnant = "Abandon " + self.joueurNoir.pseudo + ". Victoire " + self.joueurBlanc.pseudo
+                        else:
+                            pseudo_gagnant = "Abandon " + self.joueurBlanc.pseudo + ". Victoire " + self.joueurNoir.pseudo
+                        enregistrer_partie(self.joueurBlanc.pseudo, self.joueurNoir.pseudo, pseudo_gagnant)
+                        self.envoyer_au_joueur_courant("OK")
+                        fini = True
+                    else:
+                        self.envoyer_au_joueur_courant("ERR Aucune partie active")
+
+                elif cmd == "replay":
+                    print("A faire")
+
+                elif cmd == "new":
+                    print("A faire")
+                    # self.joueurBlanc = Joueur(pseudo_blanc, est_noir=False)
+                    # self.joueurNoir = Joueur(pseudo_noir, est_noir=True)
+
                 else:
-                    self.envoyer_au_joueur_courant("ERR Aucune partie active")
-
-            elif cmd == "replay":
-                print("A faire")
-
-            elif cmd == "new":
-                print("A faire")
-                # self.joueur1 = Joueur(pseudo_blanc, est_noir=False)
-                # self.joueur2 = Joueur(pseudo_noir, est_noir=True)
-
+                    texte = "ERREUR Commande inconnue. C'est au tour des " + ("Noirs" if self.tour_noir else "Blancs") + "\n"
+                    line = self.demander_au_joueur_courant(texte)
             else:
-                texte = "ERREUR Commande inconnue. C'est au tour des " + ("Noirs" if self.tour_noir else "Blancs") + "\n"
-                line = self.demander_au_joueur_courant(texte)
+                line = self.demander_au_joueur_courant("C'est au tour des " + ("Noirs" if self.tour_noir else "Blancs") + " : \n")
 
 
         print("Fermeture des sessions...")

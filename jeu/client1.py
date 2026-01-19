@@ -22,10 +22,13 @@ class Client:
 
     def recuperer_envois(self):
         print(threading.active_count())
+        recu = None
         while self.running:
-            recu = "rien" #self.f_lecture.readline().strip() # interrompt
-            print(recu, end="") 
-            time.sleep(1)
+            #print(self.f_lecture.read())
+            recu = self.f_lecture.readline().strip() # interrompt
+            if recu != "":
+                print(recu) 
+                #time.sleep(1)
         self.f_lecture.close()
         self.sock.shutdown(socket.SHUT_RDWR)
         self.sock.close()
@@ -36,12 +39,12 @@ class Client:
         print(threading.active_count())
         while self.running:
             self.entree = input() # interrompt
-            #if self.entree is not None:
-            #    self.f_ecriture.write(self.entree+"\n")
-            #    self.f_ecriture.flush()
-            #elif self.entree == "quit":
-            #    self.running = False
-            time.sleep(1)
+            if (self.entree is not None) and (self.entree.strip() != ""):
+                self.f_ecriture.write(self.entree+"\n")
+                self.f_ecriture.flush()
+            elif self.entree == "quit":
+                self.running = False
+            #time.sleep(1)
         self.f_ecriture.close()
         self.sock.shutdown(socket.SHUT_RDWR)
         self.sock.close()
