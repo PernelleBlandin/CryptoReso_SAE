@@ -87,6 +87,16 @@ class Session:
 
             elif cmd == "replay":
                 print("A faire, rejoue avec les memes joueurs")
+                if(self.joueur1 and self.joueur2) is not None:
+                    self.partie = Jeu(self.joueur1, self.joueur2)
+                    self.tour_noir = False
+                    self.file.write("Replay, nouvelle partie.")
+                    #Memo : utiliser la fonction de maelyss qd finie pour lancer_partie()
+                    echiquier = "\n" + str(self.partie.echiquier) + "\n"
+                    self.file.write(echiquier)
+                    self.file.write("C'est au tour des Blancs : \n")
+                else : 
+                    self.file.write("ERR Relance de la partie impossible avec l'adversaire\n")
 
             elif cmd == "new":
                 print("A faire, relance une nouvelle partie a la fin d'une partie")
@@ -94,7 +104,6 @@ class Session:
                     self.file.write("Recherche d'un nouvel adversaire...\n")
                     self.serveur.mettre_en_attente(self)
                     self.file.write("Nouvel adversaire trouvé !\n")
-                    fini = True
                 else:
                     self.file.write("ERR Aucun joueur trouvé\n")
 
