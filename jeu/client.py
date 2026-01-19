@@ -15,6 +15,10 @@ def client(host:str, port:int):
             if not line:
                 break
             
+            if line.strip().lower() == "exit":
+                print("\n[SERVEUR] Fin de partie non prévue (Erreur serveur)")
+                break
+
             if ":" in line or "tour des" in line:
                 mess = input(line.strip() + " ").strip()
                 f.write(mess + "\n")
