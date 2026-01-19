@@ -27,7 +27,7 @@ class Partie:
             return self.joueurNoir.recuperer_entree(message)
 
     def lancer(self):
-        self.envoyer_aux_deux("Début de la partie !")
+        self.envoyer_aux_deux("Debut de la partie !")
         fini = False
         line = "yfgfg"
         while not fini: 
@@ -38,7 +38,7 @@ class Partie:
             
             print("Commande reçue : " + (self.joueurNoir.pseudo if self.tour_noir else self.joueurBlanc.pseudo) + " " + str(line))
 
-            # On récupère les parties de la commande
+            # On recupère les parties de la commande
             parts = line.split()
             print(parts)
 

@@ -16,13 +16,13 @@ class Session(Thread):
         print(message)
         self.file.write(message + "\n")
         self.file.flush()
-        print(message + " écrit")
+        print(message + " ecrit")
 
     def recuperer_entree(self, message)->str:
         recu = ""
         self.file.write(message + "\n")
         self.file.flush()
-        print(message + " demandé")
+        print(message + " demande")
         while recu == "":
             recu = self.file.readline().strip()
             print("reçu : " + recu)
@@ -40,7 +40,7 @@ class Session(Thread):
             if self.pseudo == None:
                print("entree ici")
                self.pseudo = self.recuperer_entree("Choisissez un pseudo ")
-               self.envoyer_message("Début de la recherche d'un joueur...")
+               self.envoyer_message("Debut de la recherche d'un joueur...")
                self.serveur.mettre_en_attente(self)
 
             if line == "quit":

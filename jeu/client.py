@@ -11,7 +11,7 @@ def client(host:str, port:int):
    mess = ""
    while True:
        line = f.readline()
-       #print("récupéré : " + line)
+       #print("recupere : " + line)
        if not line:
            break
        
