@@ -27,7 +27,7 @@ class Partie:
             return self.joueurNoir.recuperer_entree(message)
 
     def lancer(self):
-        self.envoyer_aux_deux("Début de la partie !")
+        self.envoyer_aux_deux("Debut de la partie !")
         fini = False
         line = None
         while not fini: 
