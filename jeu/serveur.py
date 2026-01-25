@@ -26,15 +26,19 @@ class Serveur:
 
    def mainServeur(self, port):
        sock= socket.socket()
-       sock.bind(("0.0.0.0", port))
        sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+       sock.bind(("0.0.0.0", port))
        sock.listen(10)
-       while True:
-           cli, _ = sock.accept()
-           sess = Session(self, cli)
-           self.sessions_connectees.add(sess)
-           sess.start()
-           print("Au prochain !")
+       try:
+           while True:
+               cli, _ = sock.accept()
+               sess = Session(self, cli)
+               self.sessions_connectees.add(sess)
+               sess.start()
+               print("Au prochain !")
+       except KeyboardInterrupt:
+           print("\nArrêt du serveur...")
+           sock.close()
 
 if __name__ == "__main__":
    Serveur().mainServeur(constantes.PORT)

@@ -10,15 +10,13 @@ def client(host:str, port:int):
 
    mess = ""
    while True:
-       recu = f.readline().strip()
-       if recu != "":
-            line = recu
-
+       line = f.readline()
        if not line:
            break
        
-       if ":" in line or "tour des" or "Choisissez" or "Attente" in line:
-           mess = input(line.strip() + " ")
+       ligne = line.strip()
+       if ligne and any(mot in ligne for mot in [":", "tour des", "Choisissez", "Attente"]):
+           mess = input(ligne + " ")
            f.write(mess + "\n")
            f.flush()
            if mess.lower() in ["quit", "leave"]:
