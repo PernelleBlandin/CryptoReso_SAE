@@ -39,6 +39,11 @@ class Partie:
                 
                 print("Commande reçue : " + (self.joueurNoir.pseudo if self.tour_noir else self.joueurBlanc.pseudo) + " " + str(line))
 
+                # Afficher la commande sur le terminal de l'adversaire
+                adversaire = self.joueurBlanc if self.tour_noir else self.joueurNoir
+                pseudo_actuel = self.joueurNoir.pseudo if self.tour_noir else self.joueurBlanc.pseudo
+                adversaire.envoyer_message(f"{pseudo_actuel} : {line}")
+
                 # On récupère les parties de la commande
                 parts = line.split()
                 print(parts)
@@ -49,13 +54,11 @@ class Partie:
                 cmd = parts[0].lower()
 
                 if cmd == "quit":
-                    if self.joueurBlanc is not None:
-                        if self.tour_noir:
-                            pseudo_gagnant = "Abandon " + self.joueurNoir.pseudo + ". Victoire " + self.joueurBlanc.pseudo
-                        else:
-                            pseudo_gagnant = "Abandon " + self.joueurBlanc.pseudo + ". Victoire " + self.joueurNoir.pseudo
-                        enregistrer_partie(self.joueurBlanc.pseudo, self.joueurNoir.pseudo, pseudo_gagnant)
-                        self.envoyer_au_joueur_courant("OK")
+                    if self.tour_noir:
+                        pseudo_gagnant = "Abandon " + self.joueurNoir.pseudo + ". Victoire " + self.joueurBlanc.pseudo
+                    else:
+                        pseudo_gagnant = "Abandon " + self.joueurBlanc.pseudo + ". Victoire " + self.joueurNoir.pseudo
+                    enregistrer_partie(self.joueurBlanc.pseudo, self.joueurNoir.pseudo, pseudo_gagnant)
                     fini = True
 
                 elif cmd == "play":
@@ -92,16 +95,13 @@ class Partie:
                         line = self.demander_au_joueur_courant("ERREUR (Format: play caseSrc caseDst). C'est au tour des " + ("Noirs" if self.tour_noir else "Blancs") + "\n")
 
                 elif cmd == "leave":
-                    if self.joueurBlanc is not None:
-                        if self.tour_noir:
-                            pseudo_gagnant = "Abandon " + self.joueurNoir.pseudo + ". Victoire " + self.joueurBlanc.pseudo
-                        else:
-                            pseudo_gagnant = "Abandon " + self.joueurBlanc.pseudo + ". Victoire " + self.joueurNoir.pseudo
-                        enregistrer_partie(self.joueurBlanc.pseudo, self.joueurNoir.pseudo, pseudo_gagnant)
-                        self.envoyer_au_joueur_courant("OK")
-                        fini = True
+                    if self.tour_noir:
+                        pseudo_gagnant = "Abandon " + self.joueurNoir.pseudo + ". Victoire " + self.joueurBlanc.pseudo
                     else:
-                        line = self.demander_au_joueur_courant("ERR Aucune partie active. Rejouez : ")
+                        pseudo_gagnant = "Abandon " + self.joueurBlanc.pseudo + ". Victoire " + self.joueurNoir.pseudo
+                    enregistrer_partie(self.joueurBlanc.pseudo, self.joueurNoir.pseudo, pseudo_gagnant)
+                    self.envoyer_au_joueur_courant("OK")
+                    fini = True
 
                 elif cmd == "replay":
                     line = self.demander_au_joueur_courant("Commande replay non implémentée. Rejouez : ")
