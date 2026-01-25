@@ -1,9 +1,10 @@
 from Jeu import *
-from Historique import enregistrer_partie
 import socket
+from threading import Thread
 
 
-class Session:
+
+class Session(Thread):
     def __init__(self, serveur, sock):
        super().__init__()
        self.serveur = serveur

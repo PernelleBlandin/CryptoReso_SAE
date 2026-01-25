@@ -1,4 +1,3 @@
-from jeu import Jeu
 from session import *
 
 class Partie:
