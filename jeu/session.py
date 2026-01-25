@@ -8,7 +8,7 @@ class Session(Thread):
        super().__init__()
        self.serveur = serveur
        self.socket = sock
-       self.file=sock.makefile(mode="rw")
+       self.file=sock.makefile(mode="rw", encoding="utf-8")
        self.counter = 0
        self.pseudo = None
 
