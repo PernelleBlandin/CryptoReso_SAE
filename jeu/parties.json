@@ -22,5 +22,26 @@
     "noir": "z",
     "gagnant": "Abandon a. Victoire z",
     "date": "2026:01:15 11:57:20"
+<<<<<<< HEAD
+=======
+  },
+  {
+    "blanc": "zenv",
+    "noir": "tyuj",
+    "gagnant": "Abandon tyuj. Victoire zenv",
+    "date": "2026:01:15 12:11:45"
+  },
+  {
+    "blanc": "jeje",
+    "noir": "kekeke",
+    "gagnant": "Abandon jeje. Victoire kekeke",
+    "date": "2026:01:15 23:35:28"
+  },
+  {
+    "blanc": "yay",
+    "noir": "yey",
+    "gagnant": "Abandon yey. Victoire yay",
+    "date": "2026:01:19 18:21:29"
+>>>>>>> protocole
   }
 ]

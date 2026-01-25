@@ -10,29 +10,19 @@ def client(host:str, port:int):
 
     mess = ""
     while True:
-        try:
-            line = f.readline()
-            if not line:
-                break
-            
-            if line.strip().lower() == "exit":
-                print("\n[SERVEUR] Fin de partie non prévue (Erreur serveur)")
-                break
-
-            if ":" in line or "tour des" in line:
-                mess = input(line.strip() + " ").strip()
-                f.write(mess + "\n")
-                f.flush()
-                
-                if mess.lower() in ["quit", "leave"]:
-                    response = f.readline()  # Attendre la réponse du serveur
-                    print(response, end="")
-                    break
-            else:
-                print(line, end="")
-        except Exception as e:
-            print(f"Erreur de connexion: {e}")
+        line = f.readline()
+        if not line:
             break
+       
+        ligne = line.strip()
+        if ligne and any(mot in ligne for mot in [":", "tour des", "Choisissez", "Attente"]):
+            mess = input(ligne + " ")
+            f.write(mess + "\n")
+            f.flush()
+            if mess.lower() in ["quit", "leave"]:
+               break
+        else:
+            print(line, end="")
 
     
     f.close()
