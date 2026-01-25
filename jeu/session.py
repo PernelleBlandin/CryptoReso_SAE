@@ -1,119 +1,56 @@
-from Jeu import *
+from jeu import *
 from Historique import enregistrer_partie
 import socket
+from threading import Thread
 
-
-class Session:
+class Session(Thread):
     def __init__(self, serveur, sock):
-        self.serveur = serveur
-        self.socket = sock
-        self.file=sock.makefile(mode="rw", encoding="utf-8")
-        self.counter = 0
-        self.joueur1 = None
-        self.joueur2 = None
-        self.partie = Jeu(self.joueur1, self.joueur2)
-        self.tour_noir = False
-    
-    def mainSession(self):
-        print("Mise en place d'une nouvelle session...")
-        fini = False
-        while not fini:
-            if self.joueur1 == None:
-                self.file.write("Donner un nom pour le joueur Blanc : " + "\n")
-                self.file.flush()
-                pseudoBlanc = self.file.readline().strip()
-                self.joueur1 = Joueur(pseudoBlanc, False)
-                self.partie.joueur1 = self.joueur1
+       super().__init__()
+       self.serveur = serveur
+       self.socket = sock
+       self.file=sock.makefile(mode="rw", encoding="utf-8")
+       self.counter = 0
+       self.pseudo = None
 
-                self.file.write("Donner un nom pour le joueur Noir : " + "\n")
-                self.file.flush()
-                pseudoNoir = self.file.readline().strip()
-                self.joueur2 = Joueur(pseudoNoir, True)
-                self.partie.joueur2 = self.joueur2
-                
-                self.file.write("Début de la partie..." + "\n")
-                echiquier = "\n" + str(self.partie.echiquier) + "\n"
-                self.file.write(echiquier)
-                self.file.write("C'est au tour des Blancs : \n")
-                self.file.flush()
+    def envoyer_message(self, message):
+        #print(message)
+        self.file.write(message + "\n")
+        self.file.flush()
+        print(message + " ecrit")
 
-            line = self.file.readline().strip()
-            if not line: # Le client s'est déconnecté
-                break
+    def recuperer_entree(self, message)->str:
+        recu = ""
+        self.file.write(message + "\n")
+        self.file.flush()
+        print(message + " demande")
+        while recu == "":
+            recu = self.file.readline().strip()
+            print("toujours pas de line reçue..." + recu)
+            #print("reçu : " + recu)
+        return recu
 
-            print("Commande reçue : " + (self.joueur2.pseudo if self.tour_noir else self.joueur1.pseudo) + " " + line)
-
-            # On récupère les parties de la commande
-            parts = line.split()
-            if not parts:
-                continue
-                
-            cmd = parts[0].lower()
-
-            if cmd == "quit":
-                if self.joueur1 is not None:
-                    if self.tour_noir:
-                        pseudo_gagnant = "Abandon " + self.joueur2.pseudo + ". Victoire " + self.joueur1.pseudo
-                    else:
-                        pseudo_gagnant = "Abandon " + self.joueur1.pseudo + ". Victoire " + self.joueur2.pseudo
-                    enregistrer_partie(self.joueur1.pseudo, self.joueur2.pseudo, pseudo_gagnant)
-                self.file.write("OK\n")
-                self.file.flush()
-                fini = True
-
-            elif cmd == "play":
-                if len(parts) == 3:
-                    res = self.partie.valider_et_deplacer(parts[1], parts[2], self.tour_noir)
-                    if res == "OK":
-                        self.tour_noir = not self.tour_noir
-                    echiquier = "\n" + str(self.partie.echiquier) + "\n"
-                    self.file.write(echiquier)
-                    self.file.write(res + ", C'est au tour des " + ("Noirs" if self.tour_noir else "Blancs") + " : \n")
-                else:
-                    texte = "ERREUR (Format: play caseSrc caseDst). C'est au tour des " + ("Noirs" if self.tour_noir else "Blancs") + "\n"
-                    self.file.write(texte)
-
-            elif cmd == "leave":
-                if self.joueur1 is not None:
-                    if self.tour_noir:
-                        pseudo_gagnant = "Abandon " + self.joueur2.pseudo + ". Victoire " + self.joueur1.pseudo
-                    else:
-                        pseudo_gagnant = "Abandon " + self.joueur1.pseudo + ". Victoire " + self.joueur2.pseudo
-                    enregistrer_partie(self.joueur1.pseudo, self.joueur2.pseudo, pseudo_gagnant)
-                    self.file.write("OK\n")
-                    fini = True
-                else:
-                    self.file.write("ERR Aucune partie active\n")
-
-            elif cmd == "replay":
-                print("A faire, rejoue avec les memes joueurs")
-                if(self.joueur1 and self.joueur2) is not None:
-                    self.partie = Jeu(self.joueur1, self.joueur2)
-                    self.tour_noir = False
-                    self.file.write("Replay, nouvelle partie.")
-                    #Memo : utiliser la fonction de maelyss qd finie pour lancer_partie()
-                    echiquier = "\n" + str(self.partie.echiquier) + "\n"
-                    self.file.write(echiquier)
-                    self.file.write("C'est au tour des Blancs : \n")
-                else : 
-                    self.file.write("ERR Relance de la partie impossible avec l'adversaire\n")
-
-            elif cmd == "new":
-                print("A faire, relance une nouvelle partie a la fin d'une partie")
-                if self.joueur1 is not None : #a completer pour que j1 et/ou j2 qui relance sans blocage
-                    self.file.write("Recherche d'un nouvel adversaire...\n")
-                    self.serveur.mettre_en_attente(self)
-                    self.file.write("Nouvel adversaire trouvé !\n")
-                else:
-                    self.file.write("ERR Aucun joueur trouvé\n")
-
-            else:
-                texte = "ERREUR Commande inconnue. C'est au tour des " + ("Noirs" if self.tour_noir else "Blancs") + "\n"
-                self.file.write(texte)
-            
-            self.file.flush()
-
-        print("Fermeture de la session actuelle...")
+    def fermer_session(self):
         self.file.close()
         self.socket.shutdown(socket.SHUT_RDWR)
         self.socket.close()
+
+    def run(self):
+        line = None
+        print("Mise en place d'une nouvelle session...")
+        while True:
+            if self.pseudo == None:
+               #print("entree ici")
+               self.pseudo = self.recuperer_entree("Choisissez un pseudo ")
+               self.envoyer_message("Debut de la recherche d'un joueur...")
+               self.serveur.mettre_en_attente(self)
+
+            if line == "quit":
+                break
+            #else:
+            #    self.file.write("err\n")
+            #    self.file.flush()
+            #self.file.write("Hello I'm still here")
+            #self.file.flush()
+
+            #line = self.file.readline().strip()
+            #print("Ligne reçue : " + line)

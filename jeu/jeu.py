@@ -10,7 +10,7 @@ class Jeu():
        self.echiquier = Echiquier()
 
 
-    def lancer(self):
+    def lancer_solo(self):
         pseudo_blanc = input("Pseudo du joueur Blanc : ").strip()
         pseudo_noir = input("Pseudo du joueur Noir : ").strip()
         self.joueur1 = Joueur(pseudo_blanc, est_noir=False)
@@ -72,6 +72,6 @@ class Jeu():
 
 if __name__ == "__main__":
     jeu = Jeu(None, None)
-    res = jeu.lancer()
+    res = jeu.lancer_solo()
     print(f"Fin de partie, résultat : {res}")
 
