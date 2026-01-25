@@ -13,13 +13,12 @@ class Serveur:
        self.sessions_en_attente = Queue(-1)
 
    def mettre_en_attente(self, session:Session):
-       self.sessions_en_attente.put(session)
-       while self.sessions_en_attente._qsize() > 1:
-           #print("condition")
-           joueurBlanc = self.sessions_en_attente.get_nowait()
-           joueurNoir = self.sessions_en_attente.get_nowait()
-           partie = Partie(joueurBlanc, joueurNoir)
-           partie.lancer()
+    self.sessions_en_attente.put(session)
+    if self.sessions_en_attente.qsize() > 1:
+        joueurBlanc = self.sessions_en_attente.get()
+        joueurNoir = self.sessions_en_attente.get()
+        partie = Partie(joueurBlanc, joueurNoir)
+        Thread(target=partie.lancer).start()
 
    def retirer_en_attente(self, session):
        self.sessions_en_attente.pop(session)

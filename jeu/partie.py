@@ -105,12 +105,16 @@ class Partie:
                         line = self.demander_au_joueur_courant("ERR Aucune partie active. Rejouez : ")
 
                 elif cmd == "replay":
-                    line = self.demander_au_joueur_courant("Commande replay non implémentée. Rejouez : ")
+                    self.joueurBlanc, self.joueurNoir = self.joueurNoir, self.joueurBlanc
+                    self.partie = Jeu(self.joueurBlanc, self.joueurNoir)
+                    self.tour_noir = False
+                    self.envoyer_aux_deux("Nouvelle partie relancée avec le meme joueur!")
+                    self.envoyer_aux_deux("\n"+ str(self.partie.echiquier)+"\n")
+                    line = self.demander_au_joueur_courant("C'est au tour des Blancs : \n")
 
                 elif cmd == "new":
-                    line = self.demander_au_joueur_courant("Commande new non implémentée. Rejouez : ")
-                    # self.joueurBlanc = Joueur(pseudo_blanc, est_noir=False)
-                    # self.joueurNoir = Joueur(pseudo_noir, est_noir=True)
+                    self.envoyer_au_joueur_courant("OK")
+                    fini = True
 
                 else:
                     texte = "ERREUR Commande inconnue. C'est au tour des " + ("Noirs" if self.tour_noir else "Blancs") + "\n"
@@ -120,5 +124,33 @@ class Partie:
 
 
         print("Fermeture des sessions...")
+
+        choix_blanc = None
+        choix_noir = None
+
+        while True:
+            if not choix_blanc:
+                choix_blanc = self.joueurBlanc.recuperer_entree("Partie terminée. Tapez 'replay' pour rejouer ou 'quit' pour quitter : ").lower()
+            if not choix_noir:
+                choix_noir = self.joueurNoir.recuperer_entree("Partie terminée. Tapez 'replay' pour rejouer ou 'quit' pour quitter : ").lower()
+
+            if choix_blanc == "replay" and choix_noir == "replay":
+                self.envoyer_aux_deux ("OK")
+                self.partie = Jeu(self.joueurBlanc, self.joueurNoir) 
+                self.tour_noir = False
+                self.lancer()
+                return
+            
+            elif choix_blanc == "new" or choix_noir == "new":
+                self.envoyer_aux_deux("OK")
+                if choix_blanc == "new": self.joueurBlanc.pseudo = None
+                if choix_noir == "new": self.joueurNoir.pseudo = None
+                break
+
+            if choix_blanc == "quit" or choix_noir == "quit":
+                self.envoyer_aux_deux("OK - Déconnexion.")
+                break
+
+
         self.joueurBlanc.fermer_session()
         self.joueurNoir.fermer_session()
