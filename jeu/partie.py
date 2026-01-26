@@ -127,12 +127,14 @@ class Partie:
 
         choix_blanc = None
         choix_noir = None
+        garder_blanc_ouvert = False
+        garder_noir_ouvert = False
 
         while True:
             if not choix_blanc:
-                choix_blanc = self.joueurBlanc.recuperer_entree("Partie terminée. Tapez 'replay' pour rejouer ou 'quit' pour quitter : ").lower()
+                choix_blanc = self.joueurBlanc.recuperer_entree("Partie terminée. Tapez 'replay' pour rejouer, 'new' pour une autre partie ou 'quit' pour quitter : ").lower()
             if not choix_noir:
-                choix_noir = self.joueurNoir.recuperer_entree("Partie terminée. Tapez 'replay' pour rejouer ou 'quit' pour quitter : ").lower()
+                choix_noir = self.joueurNoir.recuperer_entree("Partie terminée. Tapez 'replay' pour rejouer,  'new' pour une autre partie ou 'quit' pour quitter : ").lower()
 
             if choix_blanc == "replay" and choix_noir == "replay":
                 self.envoyer_aux_deux ("OK")
@@ -142,9 +144,14 @@ class Partie:
                 return
             
             elif choix_blanc == "new" or choix_noir == "new":
-                self.envoyer_aux_deux("OK")
-                if choix_blanc == "new": self.joueurBlanc.pseudo = None
-                if choix_noir == "new": self.joueurNoir.pseudo = None
+                if choix_blanc == "new":
+                    self.joueurBlanc.envoyer_message("OK")
+                    self.joueurBlanc.pseudo = None # Reset pour la boucle dans session.py
+                    garder_blanc_ouvert = True
+                if choix_noir == "new":
+                    self.joueurNoir.envoyer_message("OK")
+                    self.joueurNoir.pseudo = None
+                    garder_noir_ouvert = True
                 break
 
             if choix_blanc == "quit" or choix_noir == "quit":
@@ -152,5 +159,17 @@ class Partie:
                 break
 
 
-        self.joueurBlanc.fermer_session()
-        self.joueurNoir.fermer_session()
+        print("Fermeture des sessions ou redirection...")
+
+        # On vérifie qui a demandé 'new' (pseudo mis à None)
+        if self.joueurBlanc.pseudo != None:
+            print("Le joueur Blanc repart en file d'attente.")
+        else:
+            print(f"Fermeture session de {self.joueurBlanc.pseudo}")
+            self.joueurBlanc.fermer_session()
+
+        if self.joueurNoir.pseudo is None:
+            print("Le joueur Noir (new) repart en file d'attente.")
+        else:
+            print(f"Fermeture session de {self.joueurNoir.pseudo}")
+            self.joueurNoir.fermer_session()
