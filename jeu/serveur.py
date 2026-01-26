@@ -15,6 +15,8 @@ class Serveur:
     if self.sessions_en_attente.qsize() > 1:
         joueurBlanc = self.sessions_en_attente.get()
         joueurNoir = self.sessions_en_attente.get()
+        joueurBlanc.envoyer_message("start w")
+        joueurNoir.envoyer_message("start b")
         partie = Partie(joueurBlanc, joueurNoir)
         Thread(target=partie.lancer).start()
 
