@@ -1,7 +1,8 @@
-from jeu import *
-from Historique import enregistrer_partie
+from Jeu import *
 import socket
 from threading import Thread
+
+
 
 class Session(Thread):
     def __init__(self, serveur, sock):
@@ -46,11 +47,3 @@ class Session(Thread):
 
             if line == "quit":
                 break
-            #else:
-            #    self.file.write("err\n")
-            #    self.file.flush()
-            #self.file.write("Hello I'm still here")
-            #self.file.flush()
-
-            #line = self.file.readline().strip()
-            #print("Ligne reçue : " + line)
