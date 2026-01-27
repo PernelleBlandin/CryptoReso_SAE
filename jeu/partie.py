@@ -74,8 +74,17 @@ class Partie:
                                 if est_echec:
                                     if not coups_possibles:
                                         self.envoyer_aux_deux("\n" + str(self.partie.echiquier) + "\n")
-                                        gagnant = self.joueurNoir.pseudo if not self.tour_noir else self.joueurBlanc.pseudo
-                                        self.envoyer_aux_deux(f"ECHEC ET MAT ! Victoire de {gagnant}")
+                                        self.envoyer_aux_deux("ECHEC ET MAT")
+                                        
+                                        if self.tour_noir:
+                                            self.joueurBlanc.envoyer_message("win")
+                                            self.joueurNoir.envoyer_message("lose")
+                                            gagnant = self.joueurBlanc.pseudo
+                                        else:
+                                            self.joueurNoir.envoyer_message("win")
+                                            self.joueurBlanc.envoyer_message("lose")
+                                            gagnant = self.joueurNoir.pseudo
+
                                         enregistrer_partie(self.joueurBlanc.pseudo, self.joueurNoir.pseudo, gagnant)
                                         fini = True
                                         continue
@@ -83,7 +92,7 @@ class Partie:
                                         res = "ECHEC"
                                 elif not coups_possibles:
                                     self.envoyer_aux_deux("\n" + str(self.partie.echiquier) + "\n")
-                                    self.envoyer_aux_deux("PAT ! Match nul.")
+                                    self.envoyer_aux_deux("draw")
                                     enregistrer_partie(self.joueurBlanc.pseudo, self.joueurNoir.pseudo, "Nul")
                                     fini = True
                                     continue
