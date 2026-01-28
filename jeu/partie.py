@@ -112,17 +112,21 @@ class Partie:
                         self.envoyer_au_joueur_courant("OK")
                         fini = True
 
-                    elif cmd == "replay":
-                        self.joueurBlanc, self.joueurNoir = self.joueurNoir, self.joueurBlanc
-                        self.partie = Jeu(self.joueurBlanc, self.joueurNoir)
-                        self.tour_noir = False
-                        self.envoyer_aux_deux("Nouvelle partie relancée avec le meme joueur!")
-                        self.envoyer_aux_deux("\n"+ str(self.partie.echiquier)+"\n")
-                        line = self.demander_au_joueur_courant("C'est au tour des Blancs : \n")
+                elif choix_blanc == "quit" or choix_noir == "quit":
+                    self.envoyer_aux_deux("OK - Déconnexion.")
+                    break
 
-                    elif cmd == "new":
-                        self.envoyer_au_joueur_courant("OK")
-                        fini = True
+                elif cmd == "replay":
+                    self.joueurBlanc, self.joueurNoir = self.joueurNoir, self.joueurBlanc
+                    self.partie = Jeu(self.joueurBlanc, self.joueurNoir)
+                    self.tour_noir = False
+                    self.envoyer_aux_deux("Nouvelle partie relancée avec le meme joueur!")
+                    self.envoyer_aux_deux("\n"+ str(self.partie.echiquier)+"\n")
+                    line = self.demander_au_joueur_courant("C'est au tour des Blancs : \n")
+
+                elif cmd == "new":
+                    self.envoyer_au_joueur_courant("OK")
+                    fini = True
 
                 else:
                     texte = "ERREUR Commande inconnue. C'est au tour des " + ("Noirs" if self.tour_noir else "Blancs") + "\n"
@@ -134,38 +138,40 @@ class Partie:
             print(f"Erreur critique dans la partie : {e}")
             self.envoyer_aux_deux("exit")
 
-        finally:
-            print("Fermeture des sessions...")
-
-        choix_blanc = None
-        choix_noir = None
-
-        while True:
-            if not choix_blanc:
-                choix_blanc = self.joueurBlanc.recuperer_entree("Partie terminée. Tapez 'replay' pour rejouer ou 'quit' pour quitter : ").lower()
-            if not choix_noir:
-                choix_noir = self.joueurNoir.recuperer_entree("Partie terminée. Tapez 'replay' pour rejouer ou 'quit' pour quitter : ").lower()
-
-            if choix_blanc == "replay" and choix_noir == "replay":
-                self.envoyer_aux_deux ("OK")
-                self.partie = Jeu(self.joueurBlanc, self.joueurNoir) 
-                self.tour_noir = False
-                self.lancer()
-                return
-            
-            elif choix_blanc == "new" or choix_noir == "new":
-                self.envoyer_aux_deux("OK")
-                if choix_blanc == "new": self.joueurBlanc.pseudo = None
-                if choix_noir == "new": self.joueurNoir.pseudo = None
-                break
-
-            if choix_blanc == "quit" or choix_noir == "quit":
-                self.envoyer_aux_deux("OK - Déconnexion.")
-                break
-
-            self.joueurBlanc.fermer_session()
-            self.joueurNoir.fermer_session()
-
         print("Fermeture des sessions...")
-        self.joueurBlanc.fermer_session()
-        self.joueurNoir.fermer_session()
+### -------- PHASE DE DÉCISION FINALE ------------------- ###
+        print("Fin de match, attente des choix des joueurs...")
+
+        choix_blanc = self.joueurBlanc.recuperer_entree("Match fini. 'replay', 'new' ou 'quit' ?").lower()
+        choix_noir = self.joueurNoir.recuperer_entree("Match fini. 'replay', 'new' ou 'quit' ?").lower()
+
+        if choix_blanc == "replay" and choix_noir == "replay":
+            self.envoyer_aux_deux("OK - Revanche lancée !")
+
+            self.joueurBlanc, self.joueurNoir = self.joueurNoir, self.joueurBlanc
+            self.partie = Jeu(self.joueurBlanc, self.joueurNoir)
+            self.tour_noir = False
+            self.lancer()
+            return
+
+        for joueur, mon_choix, choix_adversaire in [
+            (self.joueurBlanc, choix_blanc, choix_noir), 
+            (self.joueurNoir, choix_noir, choix_blanc)
+        ]:
+            if mon_choix == "new":
+                joueur.envoyer_message("OK - Retour en file d'attente.")
+                joueur.en_partie = False # Débloque la boucle dans session.py
+            
+            elif mon_choix == "quit":
+                joueur.envoyer_message("OK - Déconnexion.")
+                joueur.fermer_session()
+            
+            elif mon_choix == "replay":
+                joueur.envoyer_message("L'adversaire a quitté. Retour en file d'attente...")
+                joueur.en_partie = False
+            
+            print("Fin du thread de la partie.")
+
+        print("Fermeture des sessions ou redirection...")
+
+        
