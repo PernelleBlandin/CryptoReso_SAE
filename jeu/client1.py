@@ -41,9 +41,8 @@ class Client:
                     self.running = False
                     break
 
-                recu = recu.strip()
-                if recu:
-                    print(recu)
+                recu = recu.rstrip('\n\r')
+                print(recu)
 
                 if recu.strip().lower() == "quit":
                     self.running = False

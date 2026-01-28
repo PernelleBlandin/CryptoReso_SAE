@@ -61,11 +61,16 @@ class Session(Thread):
         return True
 
 
+    def _get_users_path(self):
+        base = os.path.dirname(__file__)
+        return os.path.abspath(os.path.join(base, 'users.json'))
+
     def charger_users(self):
-        if not os.path.exists('users.json'):
+        path = self._get_users_path()
+        if not os.path.exists(path):
             return {}
         try:
-            with open('users.json', 'r') as f:
+            with open(path, 'r') as f:
                 return json.load(f)
         except json.JSONDecodeError:
             return {}
@@ -73,7 +78,8 @@ class Session(Thread):
 
 
     def sauvegarder_users(self, users):
-        with open('users.json', 'w') as f:
+        path = self._get_users_path()
+        with open(path, 'w') as f:
             json.dump(users, f)
 
     def traiter_register(self, username, password):
@@ -101,6 +107,7 @@ class Session(Thread):
 
     def run(self):
         print("Mise en place d'une nouvelle session...")
+        self.envoyer_message("Bienvenue ! Connectez-vous avec 'connect <pseudo> <mdp>' ou créez un compte avec 'register <pseudo> <mdp>'")
         authentifie = False
         while not authentifie:
             try:
@@ -121,7 +128,7 @@ class Session(Thread):
             parts = commande.split()
             
             if len(parts) < 3 or len(parts) > 3:
-                self.envoyer_message("ERR Format invalide")
+                self.envoyer_message("ERR Format invalide. Utilisez: commande pseudo motdepasse")
                 continue
             
             cmd = parts[0].lower()
