@@ -153,6 +153,11 @@ class Session(Thread):
                 self.envoyer_message("ERR Commande inconnue (register ou connect)")
 
         print(f"Pseudo authentifié : {self.pseudo}")
-        self.envoyer_message("Debut de la recherche d'un joueur...")
-        self.serveur.mettre_en_attente(self)
- 
+        while True:
+            self.en_partie = True
+            self.envoyer_message("Debut de la recherche d'un joueur...")
+            self.serveur.mettre_en_attente(self)
+
+            while self.en_partie:
+                time.sleep(0.1)
+    

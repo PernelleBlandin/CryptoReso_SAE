@@ -112,18 +112,6 @@ class Partie:
                 self.envoyer_au_joueur_courant("OK")
                 fini = True
 
-            elif cmd == "replay":
-                self.joueurBlanc, self.joueurNoir = self.joueurNoir, self.joueurBlanc
-                self.partie = Jeu(self.joueurBlanc, self.joueurNoir)
-                self.tour_noir = False
-                self.envoyer_aux_deux("Nouvelle partie relancée avec le meme joueur!")
-                self.envoyer_aux_deux("\n"+ str(self.partie.echiquier)+"\n")
-                line = self.demander_au_joueur_courant("C'est au tour des Blancs : \n")
-
-            elif cmd == "new":
-                self.envoyer_au_joueur_courant("OK")
-                fini = True
-
             else:
                 texte = "ERREUR Commande inconnue. C'est au tour des " + ("Noirs" if self.tour_noir else "Blancs") + "\n"
                 line = self.demander_au_joueur_courant(texte)
