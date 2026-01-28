@@ -15,10 +15,8 @@ class Client:
     def lancer(self):
         thread_envois = Thread(target=self.recuperer_envois)
         thread_envois.start()
-        print("on continue !")
         thread_entrees = Thread(target=self.recuperer_entree)
         thread_entrees.start()
-        print("on continue !")
 
     def fermer(self):
         if self.running:
@@ -34,6 +32,7 @@ class Client:
 
     def recuperer_envois(self):
         print(threading.active_count())
+        recu = None
         while self.running:
             try:
                 recu = self.f_lecture.readline() # interrompt
@@ -57,7 +56,6 @@ class Client:
 
     def recuperer_entree(self):
         print(threading.active_count())
-        print(" Connecté au serveur. Tapez 'register/connect pseudo mdp' (ou 'quit' pour quitter) :")
         while self.running:
             try:
                 self.entree = input() # interrompt

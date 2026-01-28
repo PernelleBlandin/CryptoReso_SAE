@@ -1,10 +1,10 @@
 from Jeu import *
+from Historique import enregistrer_partie
 import socket
 from threading import Thread
 import json
 import os
-
-
+import time
 
 class Session(Thread):
     def __init__(self, serveur, sock):
@@ -14,6 +14,7 @@ class Session(Thread):
        self.file=sock.makefile(mode="rw", encoding="utf-8")
        self.counter = 0
        self.pseudo = None
+       self.en_partie = True
 
     def envoyer_message(self, message):
         try:
