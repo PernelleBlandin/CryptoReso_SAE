@@ -5,7 +5,7 @@
 - Fronton Maelyss (@MaelyssF)  
 - Hachelef Asma (@Asminouch)  
 
-Notre travail est dans la branche develop car nous n'avons pas fait de release.
+La partie "crypto" est dans la branche crypto. Cette partie n'étant pas fonctionnelle, nous ne l'avons pas mis dans la release et dans le main
 ## Règles de déplacement des pièces:
 - **Le roi**: peut se déplacer que d'une seule case dans toutes les directions (horizontale, verticale et diagonale)
 - **La reine** : peut se déplacer en ligne horizontale ou vertical et diagonale. Elle peut parcourir autant de cases que souhaité tant qu'elle n'est pas bloqué par une autre pièce.
