@@ -4,5 +4,11 @@
     "noir": "2",
     "gagnant": "Abandon 2. Victoire 1",
     "date": "2026:01:25 16:48:16"
+  },
+  {
+    "blanc": "cris",
+    "noir": "note",
+    "gagnant": "Abandon note. Victoire cris",
+    "date": "2026:01:28 06:13:34"
   }
 ]

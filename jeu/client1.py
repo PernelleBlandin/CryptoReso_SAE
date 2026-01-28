@@ -7,8 +7,8 @@ class Client:
     def __init__(self, host:str, port:int):
         self.sock = socket.socket()
         self.sock.connect((host, port))
-        self.f_ecriture = self.sock.makefile(mode="rw")
-        self.f_lecture = self.sock.makefile(mode="r")
+        self.f_ecriture = self.sock.makefile(mode="rw", encoding="utf-8")
+        self.f_lecture = self.sock.makefile(mode="r", encoding="utf-8")
         self.running = True
         self.entree = None
 
@@ -37,12 +37,13 @@ class Client:
 
     def recuperer_entree(self):
         print(threading.active_count())
+        print(" Connecté au serveur. Tapez 'register/connect pseudo mdp' (ou 'quit' pour quitter) :")
         while self.running:
             self.entree = input() # interrompt
             if (self.entree is not None) and (self.entree.strip() != ""):
                 self.f_ecriture.write(self.entree+"\n")
                 self.f_ecriture.flush()
-            elif self.entree == "quit":
+            elif self.entree.lower() == "quit":
                 self.running = False
             #time.sleep(1)
         self.f_ecriture.close()
