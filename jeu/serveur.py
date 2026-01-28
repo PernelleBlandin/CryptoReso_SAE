@@ -18,7 +18,8 @@ class Serveur:
         joueurBlanc = self.sessions_en_attente.get()
         joueurNoir = self.sessions_en_attente.get()
         partie = Partie(joueurBlanc, joueurNoir)
-        Thread(target=partie.lancer).start()
+        t = Thread(target=partie.lancer)
+        t.start()
 
    def retirer_en_attente(self, session):
        self.sessions_en_attente.pop(session)

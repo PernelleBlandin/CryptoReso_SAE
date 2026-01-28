@@ -12,6 +12,7 @@ class Session(Thread):
        self.file=sock.makefile(mode="rw", encoding="utf-8")
        self.counter = 0
        self.pseudo = None
+       self.en_partie = True
 
     def envoyer_message(self, message):
         #print(message)
@@ -49,6 +50,27 @@ class Session(Thread):
                     self.en_partie = True
                     self.envoyer_message("Debut de la recherche d'un autre joueur...")
                     self.serveur.mettre_en_attente(self)
+            try: 
+                if self.pseudo == None:
+                    self.pseudo = self.recuperer_entree("Choisissez un pseudo ")
+                    
+
+                while True:
+
+                    self.en_partie = True
+                    self.envoyer_message("Debut de la recherche d'un autre joueur...")
+                    self.serveur.mettre_en_attente(self)
+
+                    while self.en_partie:
+                        time.sleep(1)
+                        if self.socket._closed:
+                            return
+                    print(f"Le joueur {self.pseudo} repart pour une nouvelle recherche.")
+                    
+            except Exception as e:
+                print(f"Erreur session : {e}")
+            finally:
+                self.fermer_session()
 
                     while self.en_partie:
                         time.sleep(1)

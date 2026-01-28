@@ -33,7 +33,6 @@ class Client:
         
 
     def recuperer_entree(self):
-        print(threading.active_count())
         while self.running:
             self.entree = input() # interrompt
             if (self.entree is not None) and (self.entree.strip() != ""):
