@@ -20,36 +20,60 @@ class Client:
         thread_entrees.start()
         print("on continue !")
 
+    def fermer(self):
+        if self.running:
+            self.running = False
+            try:
+                self.sock.shutdown(socket.SHUT_RDWR)
+            except:
+                pass
+            try:
+                self.sock.close()
+            except:
+                pass
+
     def recuperer_envois(self):
         print(threading.active_count())
-        recu = None
         while self.running:
+            try:
+                recu = self.f_lecture.readline() # interrompt
+                if recu == "" :
+                    print("Connexion fermée par le serveur.")
+                    self.running = False
+                    break
+
+                recu = recu.strip()
+                if recu:
+                    print(recu)
+
+                if recu.strip().lower() == "quit":
+                    self.running = False
+                    break
+            except:
+                break
             #print(self.f_lecture.read())
-            recu = self.f_lecture.readline().strip() # interrompt
-            if recu != "":
-                print(recu) 
-                #time.sleep(1)
-        self.f_lecture.close()
-        self.sock.shutdown(socket.SHUT_RDWR)
-        self.sock.close()
-        self.running = False
-        
+            
+        self.fermer()
 
     def recuperer_entree(self):
         print(threading.active_count())
         print(" Connecté au serveur. Tapez 'register/connect pseudo mdp' (ou 'quit' pour quitter) :")
         while self.running:
-            self.entree = input() # interrompt
-            if (self.entree is not None) and (self.entree.strip() != ""):
-                self.f_ecriture.write(self.entree+"\n")
-                self.f_ecriture.flush()
-            elif self.entree.lower() == "quit":
-                self.running = False
+            try:
+                self.entree = input() # interrompt
+                if not self.entree:
+                    continue
+                if self.running:
+                    self.f_ecriture.write(self.entree+"\n")
+                    self.f_ecriture.flush()
+
+                if self.entree.strip().lower() == "quit":
+                    self.running = False
+                    break
+            except:
+                break
             #time.sleep(1)
-        self.f_ecriture.close()
-        self.sock.shutdown(socket.SHUT_RDWR)
-        self.sock.close()
-        self.running = False
+        self.fermer()
             
 
 

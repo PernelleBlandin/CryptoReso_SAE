@@ -48,14 +48,22 @@ class Partie:
 
                     cmd = parts[0].lower()
 
-                    if cmd == "quit":
+                    if not line or cmd == "quit":
+                        print("Quitte la partie")
                         if self.tour_noir:
                             pseudo_gagnant = "Abandon " + self.joueurNoir.pseudo + ". Victoire " + self.joueurBlanc.pseudo
+                            self.joueurBlanc.envoyer_message("L'adversaire a quitté la partie. Vous gagnez par abandon.")
                         else:
                             pseudo_gagnant = "Abandon " + self.joueurBlanc.pseudo + ". Victoire " + self.joueurNoir.pseudo
+                            self.joueurNoir.envoyer_message("L'adversaire a quitté la partie. Vous gagnez par abandon.")
+                        
                         enregistrer_partie(self.joueurBlanc.pseudo, self.joueurNoir.pseudo, pseudo_gagnant)
-                        self.envoyer_aux_deux("quit")
+                        try:
+                            self.envoyer_aux_deux("quit")
+                        except:
+                            pass
                         fini = True
+                        return
 
                     elif cmd == "play":
                         if len(parts) == 3:

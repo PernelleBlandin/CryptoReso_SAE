@@ -16,21 +16,30 @@ class Session(Thread):
        self.pseudo = None
 
     def envoyer_message(self, message):
-        #print(message)
-        self.file.write(message + "\n")
-        self.file.flush()
-        print(message + " ecrit")
+        try:
+            #print(message)
+            self.file.write(message + "\n")
+            self.file.flush()
+            print(message + " ecrit")
+            return True
+        except:
+            print("Erreur envoi message")
+            return False
 
     def recuperer_entree(self, message)->str:
-        recu = ""
-        self.file.write(message + "\n")
-        self.file.flush()
-        print(message + " demande")
-        while recu == "":
+        try:
+            recu = ""
+            self.file.write(message + "\n")
+            self.file.flush()
             recu = self.file.readline().strip()
-            print("toujours pas de line reçue..." + recu)
-            #print("reçu : " + recu)
-        return recu
+            print(message + " demande")
+            if recu:
+                return recu
+            else:
+                return "quit"
+        except:
+            return "quit"
+
 
     def fermer_session(self):
         self.file.close()
@@ -93,7 +102,15 @@ class Session(Thread):
         print("Mise en place d'une nouvelle session...")
         authentifie = False
         while not authentifie:
-            commande = self.file.readline().strip()
+            try:
+                commande = self.file.readline()
+                if commande == "":
+                    print("Client déconnecté")
+                    break
+                commande = commande.strip()
+            except ConnectionAbortedError:
+                print("Connexion interrompue")
+                break
             print(f"Commande reçue : {commande}")
             
             if not commande:
@@ -102,7 +119,7 @@ class Session(Thread):
             
             parts = commande.split()
             
-            if len(parts) < 3:
+            if len(parts) < 3 or len(parts) > 3:
                 self.envoyer_message("ERR Format invalide")
                 continue
             
