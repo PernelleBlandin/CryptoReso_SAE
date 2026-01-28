@@ -25,9 +25,11 @@ class Session(Thread):
         self.file.flush()
         print(message + " demande")
         while recu == "":
-            recu = self.file.readline().strip()
+            line = self.file.readline()
+            if not line: # Déconnexion du socket
+                return "quit"
+            recu = line.strip()
             print("toujours pas de line reçue..." + recu)
-            #print("reçu : " + recu)
         return recu
 
     def fermer_session(self):

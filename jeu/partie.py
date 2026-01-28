@@ -114,12 +114,11 @@ class Partie:
                     elif cmd == "new":
                         self.envoyer_au_joueur_courant("OK")
                         fini = True
-
+                    else:
+                        texte = "ERREUR Commande inconnue. C'est au tour des " + ("Noirs" if self.tour_noir else "Blancs") + "\n"
+                        line = self.demander_au_joueur_courant(texte)
                 else:
-                    texte = "ERREUR Commande inconnue. C'est au tour des " + ("Noirs" if self.tour_noir else "Blancs") + "\n"
-                    line = self.demander_au_joueur_courant(texte)
-            else:
-                line = self.demander_au_joueur_courant("C'est au tour des " + ("Noirs" if self.tour_noir else "Blancs") + " : \n")
+                    line = self.demander_au_joueur_courant("C'est au tour des " + ("Noirs" if self.tour_noir else "Blancs") + " : \n")
         
         except Exception as e:
             print(f"Erreur critique dans la partie : {e}")
@@ -153,9 +152,6 @@ class Partie:
             if choix_blanc == "quit" or choix_noir == "quit":
                 self.envoyer_aux_deux("OK - Déconnexion.")
                 break
-
-            self.joueurBlanc.fermer_session()
-            self.joueurNoir.fermer_session()
 
         print("Fermeture des sessions...")
         self.joueurBlanc.fermer_session()

@@ -28,6 +28,8 @@ class Client:
             recu = self.f_lecture.readline().strip() # interrompt
             if recu != "":
                 print(recu) 
+                if recu == "quit":
+                    self.running = False
                 #time.sleep(1)
         self.f_lecture.close()
         self.sock.shutdown(socket.SHUT_RDWR)
