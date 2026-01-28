@@ -3,6 +3,8 @@ from Historique import enregistrer_partie
 import socket
 from threading import Thread
 import time
+from cryptography.fernet import Fernet
+
 
 class Session(Thread):
     def __init__(self, serveur, sock):
@@ -13,17 +15,30 @@ class Session(Thread):
        self.counter = 0
        self.pseudo = None
        self.en_partie = True
+       self.key = None
+       self.codeur = None
+    
+    def creer_encryptage(self):
+       self.key = Fernet.generate_key()
+       self.codeur = Fernet(self.key)
 
     def envoyer_message(self, message):
-        #print(message)
+        if self.key is not None:
+            self.encrypter_envoyer_message(message)
+        else:
+            self.file.write(message + "\n")
+            self.file.flush()
+            print(message + " ecrit")
+
+    def encrypter_envoyer_message(self, message):
+        message = str(self.codeur.encrypt(message.encode(encoding="utf-8")))
         self.file.write(message + "\n")
         self.file.flush()
         print(message + " ecrit")
 
     def recuperer_entree(self, message)->str:
         recu = ""
-        self.file.write(message + "\n")
-        self.file.flush()
+        self.envoyer_message(message)
         print(message + " demande")
         while recu == "":
             recu = self.file.readline().strip()
@@ -42,7 +57,10 @@ class Session(Thread):
         while True:
             try: 
                 if self.pseudo == None:
+                    self.encrypter_envoyer_message("Message à ne surtout pas regarder")
                     self.pseudo = self.recuperer_entree("Choisissez un pseudo ")
+                    self.encrypter_envoyer_message("Debut de la recherche d'un joueur...")
+                    self.serveur.mettre_en_attente(self)
                     
 
                 while True:
