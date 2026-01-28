@@ -1,11 +1,12 @@
 from Jeu import *
-from Historique import enregistrer_partie
 import socket
 from threading import Thread
 import json
 import os
 import time
+from cryptography.hazmat.primitives.asymmetric import x25519
 from cryptography.fernet import Fernet
+import base64
 
 
 class Session(Thread):
@@ -17,16 +18,30 @@ class Session(Thread):
        self.counter = 0
        self.pseudo = None
        self.en_partie = True
-       self.key = None
-       self.codeur = None
-    
-    def creer_encryptage(self):
-       self.key = Fernet.generate_key()
-       self.codeur = Fernet(self.key)
+
+       self.private_key = x25519.X25519PrivateKey.generate()
+       self.public_key = self.private_key.public_key()
+       self.shared_key = None
+       self.encodeur = None
+
+    def crypter(self):
+        self.envoyer_message("Attente de l'envoi de la clé...")
+        while self.shared_key == None:
+            recu = self.file.readline().strip()
+            print(recu)
+            if "sync" in recu:
+                try:
+                    client_key = recu.split()[1]
+                    print(client_key)
+                except(Exception):
+                    continue
+                self.envoyer_message("sync " + self.public_key)
+                self.shared_key = self.private_key.exchange(client_key.encode())
+                self.encodeur = Fernet(self.shared_key)
 
     def envoyer_message(self, message):
         try:
-            if self.key is not None:
+            if self.shared_key is not None:
                 self.encrypter_envoyer_message(message)
             else:
                 self.file.write(message + "\n")
@@ -37,10 +52,10 @@ class Session(Thread):
             print("Erreur envoi message")
             return False
                  
-
-    def encrypter_envoyer_message(self, message):
-        message = str(self.codeur.encrypt(message.encode(encoding="utf-8")))
-        self.file.write(message + "\n")
+    def encrypter_envoyer_message(self, message:str):
+        message += "\n"
+        message = base64.urlsafe_b64encode(message.encode())
+        self.file.write(message)
         self.file.flush()
         print(message + " ecrit")
 
@@ -123,6 +138,9 @@ class Session(Thread):
 
     def run(self):
         print("Mise en place d'une nouvelle session...")
+
+        self.crypter()
+
         self.envoyer_message("Bienvenue ! Connectez-vous avec 'connect <pseudo> <mdp>' ou créez un compte avec 'register <pseudo> <mdp>'")
         authentifie = False
         while not authentifie:

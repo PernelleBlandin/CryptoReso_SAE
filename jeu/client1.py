@@ -2,6 +2,9 @@ import socket, time
 import constantes
 from threading import Thread
 import threading
+from cryptography.hazmat.primitives.asymmetric import x25519
+from cryptography.fernet import Fernet
+import base64
 
 class Client:
     def __init__(self, host:str, port:int):
@@ -12,7 +15,31 @@ class Client:
         self.running = True
         self.entree = None
 
+        self.private_key = x25519.X25519PrivateKey.generate()
+        self.public_key = self.private_key.public_key()
+        self.shared_key = None
+        self.encodeur = None
+
+    def crypter(self):
+        message = "sync ".encode() + self.public_key
+        self.f_ecriture.write(message + "\n")
+        self.f_lecture.flush()
+        print("sync " + str(self.public_key))
+        #print(str(base64.urlsafe_b64encode(message.encode())) + "\n")
+
+        while self.shared_key is None:
+            try:
+                recu = self.f_lecture.readline().strip()
+                if "sync" in recu.decode():
+                    recu = recu.split()
+                    server_key = recu[1]
+                    self.shared_key = self.private_key.exchange(server_key)
+                    self.encodeur = Fernet(base64.urlsafe_b64encode(self.shared_key))
+            except:
+                continue
+
     def lancer(self):
+        self.crypter()
         thread_envois = Thread(target=self.recuperer_envois)
         thread_envois.start()
         thread_entrees = Thread(target=self.recuperer_entree)
@@ -31,7 +58,6 @@ class Client:
                 pass
 
     def recuperer_envois(self):
-        print(threading.active_count())
         recu = None
         while self.running:
             try:
@@ -54,7 +80,6 @@ class Client:
         self.fermer()
 
     def recuperer_entree(self):
-        print(threading.active_count())
         while self.running:
             try:
                 self.entree = input() # interrompt
