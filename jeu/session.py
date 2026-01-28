@@ -44,15 +44,13 @@ class Session(Thread):
                 if self.pseudo == None:
                     self.pseudo = self.recuperer_entree("Choisissez un pseudo ")
                     
-                    # self.en_partie = True
-                    # self.serveur.mettre_en_attente(self)
 
                 while True:
-                    #recherche d'adversaire
+
                     self.en_partie = True
                     self.envoyer_message("Debut de la recherche d'un autre joueur...")
                     self.serveur.mettre_en_attente(self)
-                    #debut de partie
+
                     while self.en_partie:
                         time.sleep(1)
                         if self.socket._closed:
@@ -66,11 +64,4 @@ class Session(Thread):
 
             if line == "quit":
                 break
-            #else:
-            #    self.file.write("err\n")
-            #    self.file.flush()
-            #self.file.write("Hello I'm still here")
-            #self.file.flush()
 
-            #line = self.file.readline().strip()
-            #print("Ligne reçue : " + line)

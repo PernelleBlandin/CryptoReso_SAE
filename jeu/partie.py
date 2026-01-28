@@ -128,24 +128,21 @@ class Partie:
 
 
         print("Fermeture des sessions...")
-# --- PHASE DE DÉCISION FINALE ---
+### -------- PHASE DE DÉCISION FINALE ------------------- ###
         print("Fin de match, attente des choix des joueurs...")
 
-        # 1. On récupère le choix de chaque joueur (UNE SEULE FOIS)
         choix_blanc = self.joueurBlanc.recuperer_entree("Match fini. 'replay', 'new' ou 'quit' ?").lower()
         choix_noir = self.joueurNoir.recuperer_entree("Match fini. 'replay', 'new' ou 'quit' ?").lower()
 
-        # 2. CAS DU REPLAY (Les deux doivent être d'accord)
         if choix_blanc == "replay" and choix_noir == "replay":
             self.envoyer_aux_deux("OK - Revanche lancée !")
-            # On inverse les couleurs pour la revanche (optionnel mais sympa)
+
             self.joueurBlanc, self.joueurNoir = self.joueurNoir, self.joueurBlanc
             self.partie = Jeu(self.joueurBlanc, self.joueurNoir)
             self.tour_noir = False
-            self.lancer() # On repart pour un tour
-            return # Très important pour ne pas exécuter la suite
+            self.lancer()
+            return
 
-        # 3. TRAITEMENT INDIVIDUEL (Si pas de replay mutuel)
         for joueur, mon_choix, choix_adversaire in [
             (self.joueurBlanc, choix_blanc, choix_noir), 
             (self.joueurNoir, choix_noir, choix_blanc)
@@ -159,44 +156,10 @@ class Partie:
                 joueur.fermer_session()
             
             elif mon_choix == "replay":
-                # Le joueur voulait rejouer mais l'autre a choisi 'new' ou 'quit'
                 joueur.envoyer_message("L'adversaire a quitté. Retour en file d'attente...")
-                joueur.en_partie = False # On le renvoie en file par défaut
+                joueur.en_partie = False
             
             print("Fin du thread de la partie.")
-
-            # if choix_blanc == "replay" and choix_noir == "replay":
-            #     self.envoyer_aux_deux ("OK")
-            #     self.partie = Jeu(self.joueurBlanc, self.joueurNoir) 
-            #     self.tour_noir = False
-            #     self.lancer()
-            #     return
-            
-            # elif choix_blanc == "new" or choix_noir == "new":
-            #     if choix_blanc == "new":
-            #         self.joueurBlanc.envoyer_message("OK")
-            #         self.joueurBlanc.pseudo = None # Reset pour la boucle dans session.py
-            #         garder_blanc_ouvert = True
-            #     if choix_noir == "new":
-            #         self.joueurNoir.envoyer_message("OK")
-            #         self.joueurNoir.pseudo = None
-            #         garder_noir_ouvert = True
-
-
-            #     # On vérifie qui a demandé 'new' (pseudo mis à None)
-            #     if self.joueurBlanc.pseudo != None:
-            #         print("Le joueur Blanc repart en file d'attente.")
-            #     else:
-            #         print(f"Fermeture session de {self.joueurBlanc.pseudo}")
-            #         self.joueurBlanc.fermer_session()
-
-            #     if self.joueurNoir.pseudo is None:
-            #         print("Le joueur Noir (new) repart en file d'attente.")
-            #     else:
-            #         print(f"Fermeture session de {self.joueurNoir.pseudo}")
-            #         self.joueurNoir.fermer_session()
-            #     break
-            
 
         print("Fermeture des sessions ou redirection...")
 
