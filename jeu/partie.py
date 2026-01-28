@@ -133,8 +133,8 @@ class Partie:
 ### -------- PHASE DE DÉCISION FINALE ------------------- ###
         print("Fin de match, attente des choix des joueurs...")
 
-        choix_blanc = self.joueurBlanc.recuperer_entree("Match fini. 'replay', 'new' ou 'quit' ?").lower()
-        choix_noir = self.joueurNoir.recuperer_entree("Match fini. 'replay', 'new' ou 'quit' ?").lower()
+        choix_blanc = self.joueurBlanc.recuperer_entree("Partie terminée. Tapez 'replay' pour rejouer,  'new' pour une autre partie ou 'quit' pour quitter : ").lower()
+        choix_noir = self.joueurNoir.recuperer_entree("Partie terminée. Tapez 'replay' pour rejouer,  'new' pour une autre partie ou 'quit' pour quitter : ").lower()
 
         if choix_blanc == "replay" and choix_noir == "replay":
             self.envoyer_aux_deux("OK - Revanche lancée !")
