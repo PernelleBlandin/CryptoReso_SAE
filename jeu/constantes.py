@@ -65,5 +65,5 @@ DEPLACEMENT_ROI = [
 
 ############ POUR LE SERVEUR ############
 
-PORT = 5500
+PORT = 5511
 IP = "localhost" #modifier pour modifier l'adresse IP de l'hôte auquel le client accède
