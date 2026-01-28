@@ -31,7 +31,6 @@ class Client:
                 pass
 
     def recuperer_envois(self):
-        print(threading.active_count())
         recu = None
         while self.running:
             try:
@@ -54,7 +53,6 @@ class Client:
         self.fermer()
 
     def recuperer_entree(self):
-        print(threading.active_count())
         while self.running:
             try:
                 self.entree = input() # interrompt

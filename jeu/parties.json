@@ -106,5 +106,23 @@
     "noir": "cris",
     "gagnant": "cris",
     "date": "2026:01:28 22:22:14"
+  },
+  {
+    "blanc": "cris",
+    "noir": "asma",
+    "gagnant": "Abandon asma. Victoire cris",
+    "date": "2026:01:28 23:08:25"
+  },
+  {
+    "blanc": "cris",
+    "noir": "asma",
+    "gagnant": "asma",
+    "date": "2026:01:28 23:10:16"
+  },
+  {
+    "blanc": "asma",
+    "noir": "cris",
+    "gagnant": "Abandon asma. Victoire cris",
+    "date": "2026:01:28 23:10:29"
   }
 ]
