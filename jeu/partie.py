@@ -49,13 +49,13 @@ class Partie:
             cmd = parts[0].lower()
 
             if cmd == "quit":
-                if self.tour_noir:
-                    pseudo_gagnant = "Abandon " + self.joueurNoir.pseudo + ". Victoire " + self.joueurBlanc.pseudo
-                else:
-                    pseudo_gagnant = "Abandon " + self.joueurBlanc.pseudo + ". Victoire " + self.joueurNoir.pseudo
-                enregistrer_partie(self.joueurBlanc.pseudo, self.joueurNoir.pseudo, pseudo_gagnant)
-                self.envoyer_aux_deux("quit")
-                fini = True
+                        if self.tour_noir:
+                            pseudo_gagnant = "Abandon " + self.joueurNoir.pseudo + ". Victoire " + self.joueurBlanc.pseudo
+                        else:
+                            pseudo_gagnant = "Abandon " + self.joueurBlanc.pseudo + ". Victoire " + self.joueurNoir.pseudo
+                        enregistrer_partie(self.joueurBlanc.pseudo, self.joueurNoir.pseudo, pseudo_gagnant)
+                        self.envoyer_aux_deux("quit")
+                        fini = True
 
             elif cmd == "play":
                 if len(parts) == 3:
@@ -109,18 +109,6 @@ class Partie:
                 else:
                     pseudo_gagnant = "Abandon " + self.joueurBlanc.pseudo + ". Victoire " + self.joueurNoir.pseudo
                 enregistrer_partie(self.joueurBlanc.pseudo, self.joueurNoir.pseudo, pseudo_gagnant)
-                self.envoyer_au_joueur_courant("OK")
-                fini = True
-
-            elif cmd == "replay":
-                self.joueurBlanc, self.joueurNoir = self.joueurNoir, self.joueurBlanc
-                self.partie = Jeu(self.joueurBlanc, self.joueurNoir)
-                self.tour_noir = False
-                self.envoyer_aux_deux("Nouvelle partie relancée avec le meme joueur!")
-                self.envoyer_aux_deux("\n"+ str(self.partie.echiquier)+"\n")
-                line = self.demander_au_joueur_courant("C'est au tour des Blancs : \n")
-
-            elif cmd == "new":
                 self.envoyer_au_joueur_courant("OK")
                 fini = True
 
