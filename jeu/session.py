@@ -1,8 +1,8 @@
 from Jeu import *
+from Historique import enregistrer_partie
 import socket
 from threading import Thread
-
-
+import time
 
 class Session(Thread):
     def __init__(self, serveur, sock):
@@ -39,11 +39,27 @@ class Session(Thread):
         line = None
         print("Mise en place d'une nouvelle session...")
         while True:
-            if self.pseudo == None:
-               #print("entree ici")
-               self.pseudo = self.recuperer_entree("Choisissez un pseudo ")
-               self.envoyer_message("Debut de la recherche d'un joueur...")
-               self.serveur.mettre_en_attente(self)
+            try: 
+                if self.pseudo == None:
+                    self.pseudo = self.recuperer_entree("Choisissez un pseudo ")
+                    
+
+                while True:
+
+                    self.en_partie = True
+                    self.envoyer_message("Debut de la recherche d'un autre joueur...")
+                    self.serveur.mettre_en_attente(self)
+
+                    while self.en_partie:
+                        time.sleep(1)
+                        if self.socket._closed:
+                            return
+                    print(f"Le joueur {self.pseudo} repart pour une nouvelle recherche.")
+                    
+            except Exception as e:
+                print(f"Erreur session : {e}")
+            finally:
+                self.fermer_session()
 
             if line == "quit":
                 break

@@ -15,13 +15,10 @@ class Client:
     def lancer(self):
         thread_envois = Thread(target=self.recuperer_envois)
         thread_envois.start()
-        print("on continue !")
         thread_entrees = Thread(target=self.recuperer_entree)
         thread_entrees.start()
-        print("on continue !")
 
     def recuperer_envois(self):
-        print(threading.active_count())
         recu = None
         while self.running:
             #print(self.f_lecture.read())
