@@ -128,36 +128,49 @@ class Partie:
 
 
         print("Fermeture des sessions...")
+# --- PHASE DE DÉCISION FINALE ---
+        print("Fin de match, attente des choix des joueurs...")
 
-        # Pour simplifier, on traite chaque joueur l'un après l'autre
-        for joueur in [self.joueurBlanc, self.joueurNoir]:
-            while True:
-                choix = joueur.recuperer_entree("Partie terminée. Tapez 'replay' pour rejouer,  'new' pour une autre partie ou 'quit' pour quitter : ")
-                
-                if choix == "new":
-                    joueur.envoyer_message("OK")
-                    # On libère le joueur : sa boucle dans session.py va se débloquer
-                    joueur.en_partie = False 
-                    break
-                
-                elif choix == "quit":
-                    joueur.envoyer_message("OK")
-                    joueur.fermer_session()
-                    break
-                
-                elif choix == "replay":
-                    # Note : Le 'replay' demande normalement que les DEUX soient d'accord.
-                    # Pour rester sur ta demande 'new', je me concentre sur la libération.
-                    joueur.envoyer_message("Fonction replay non gérée ici, tapez 'new'.")
-        
+        # 1. On récupère le choix de chaque joueur (UNE SEULE FOIS)
+        choix_blanc = self.joueurBlanc.recuperer_entree("Match fini. 'replay', 'new' ou 'quit' ?").lower()
+        choix_noir = self.joueurNoir.recuperer_entree("Match fini. 'replay', 'new' ou 'quit' ?").lower()
+
+        # 2. CAS DU REPLAY (Les deux doivent être d'accord)
+        if choix_blanc == "replay" and choix_noir == "replay":
+            self.envoyer_aux_deux("OK - Revanche lancée !")
+            # On inverse les couleurs pour la revanche (optionnel mais sympa)
+            self.joueurBlanc, self.joueurNoir = self.joueurNoir, self.joueurBlanc
+            self.partie = Jeu(self.joueurBlanc, self.joueurNoir)
+            self.tour_noir = False
+            self.lancer() # On repart pour un tour
+            return # Très important pour ne pas exécuter la suite
+
+        # 3. TRAITEMENT INDIVIDUEL (Si pas de replay mutuel)
+        for joueur, mon_choix, choix_adversaire in [
+            (self.joueurBlanc, choix_blanc, choix_noir), 
+            (self.joueurNoir, choix_noir, choix_blanc)
+        ]:
+            if mon_choix == "new":
+                joueur.envoyer_message("OK - Retour en file d'attente.")
+                joueur.en_partie = False # Débloque la boucle dans session.py
+            
+            elif mon_choix == "quit":
+                joueur.envoyer_message("OK - Déconnexion.")
+                joueur.fermer_session()
+            
+            elif mon_choix == "replay":
+                # Le joueur voulait rejouer mais l'autre a choisi 'new' ou 'quit'
+                joueur.envoyer_message("L'adversaire a quitté. Retour en file d'attente...")
+                joueur.en_partie = False # On le renvoie en file par défaut
+            
             print("Fin du thread de la partie.")
 
-            if choix_blanc == "replay" and choix_noir == "replay":
-                self.envoyer_aux_deux ("OK")
-                self.partie = Jeu(self.joueurBlanc, self.joueurNoir) 
-                self.tour_noir = False
-                self.lancer()
-                return
+            # if choix_blanc == "replay" and choix_noir == "replay":
+            #     self.envoyer_aux_deux ("OK")
+            #     self.partie = Jeu(self.joueurBlanc, self.joueurNoir) 
+            #     self.tour_noir = False
+            #     self.lancer()
+            #     return
             
             # elif choix_blanc == "new" or choix_noir == "new":
             #     if choix_blanc == "new":
