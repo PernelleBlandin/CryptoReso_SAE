@@ -29,115 +29,104 @@ class Partie:
         self.envoyer_aux_deux("Debut de la partie !")
         self.envoyer_aux_deux("\n" + str(self.partie.echiquier) + "\n")
         fini = False
-        line = None
+        
+        line = self.demander_au_joueur_courant("C'est au tour des Blancs : \n")
 
         while not fini: 
-            if line is not None:
-                if not line:
-                    print("On est passé là")
-                    break
-                
-                print("Commande reçue : " + (self.joueurNoir.pseudo if self.tour_noir else self.joueurBlanc.pseudo) + " " + str(line))
+            if not line:
+                break
+            
+            print("Commande reçue : " + (self.joueurNoir.pseudo if self.tour_noir else self.joueurBlanc.pseudo) + " " + str(line))
 
-                # On récupère les parties de la commande
-                parts = line.split()
-                print(parts)
+            # On récupère les parties de la commande
+            parts = line.split()
+            print(parts)
 
-                if not parts:
-                    continue
+            if not parts:
+                line = self.demander_au_joueur_courant("C'est au tour des " + ("Noirs" if self.tour_noir else "Blancs") + " : \n")
+                continue
 
-                cmd = parts[0].lower()
+            cmd = parts[0].lower()
 
-                if cmd == "quit":
-                    if self.tour_noir:
-                        pseudo_gagnant = "Abandon " + self.joueurNoir.pseudo + ". Victoire " + self.joueurBlanc.pseudo
-                    else:
-                        pseudo_gagnant = "Abandon " + self.joueurBlanc.pseudo + ". Victoire " + self.joueurNoir.pseudo
-                    enregistrer_partie(self.joueurBlanc.pseudo, self.joueurNoir.pseudo, pseudo_gagnant)
-                    self.envoyer_aux_deux("quit")
-                    fini = True
+            if cmd == "quit":
+                if self.tour_noir:
+                    pseudo_gagnant = "Abandon " + self.joueurNoir.pseudo + ". Victoire " + self.joueurBlanc.pseudo
+                else:
+                    pseudo_gagnant = "Abandon " + self.joueurBlanc.pseudo + ". Victoire " + self.joueurNoir.pseudo
+                enregistrer_partie(self.joueurBlanc.pseudo, self.joueurNoir.pseudo, pseudo_gagnant)
+                self.envoyer_aux_deux("quit")
+                fini = True
 
-                elif cmd == "play":
-                    if len(parts) == 3:
-                        res = self.partie.valider_et_deplacer(parts[1], parts[2], self.tour_noir)
-                        if res == "OK":
-                            self.tour_noir = not self.tour_noir
-                            
-                            # Envoi du coup à l'adversaire
-                            adversaire = self.joueurNoir if self.tour_noir else self.joueurBlanc
-                            adversaire.envoyer_message(f"play_ad {parts[1]} {parts[2]}")
+            elif cmd == "play":
+                if len(parts) == 3:
+                    res = self.partie.valider_et_deplacer(parts[1], parts[2], self.tour_noir)
+                    if res == "OK":
+                        self.tour_noir = not self.tour_noir
+                        
+                        # Envoi du coup à l'adversaire
+                        adversaire = self.joueurNoir if self.tour_noir else self.joueurBlanc
+                        adversaire.envoyer_message(f"play_ad {parts[1]} {parts[2]}")
 
-                            # Vérification Echec et Mat / Pat
-                            est_echec = self.partie.echiquier.est_en_echec(self.tour_noir)
-                            coups_possibles = self.partie.echiquier.coups_legaux(self.tour_noir)
+                        # Vérification Echec et Mat / Pat
+                        est_echec = self.partie.echiquier.est_en_echec(self.tour_noir)
+                        coups_possibles = self.partie.echiquier.coups_legaux(self.tour_noir)
 
-                            if est_echec:
-                                if not coups_possibles:
-                                    self.envoyer_aux_deux("\n" + str(self.partie.echiquier) + "\n")
-                                    self.envoyer_aux_deux("ECHEC ET MAT")
-                                    
-                                    if self.tour_noir:
-                                        self.joueurBlanc.envoyer_message("win")
-                                        self.joueurNoir.envoyer_message("lose")
-                                        gagnant = self.joueurBlanc.pseudo
-                                    else:
-                                        self.joueurNoir.envoyer_message("win")
-                                        self.joueurBlanc.envoyer_message("lose")
-                                        gagnant = self.joueurNoir.pseudo
-
-                                    enregistrer_partie(self.joueurBlanc.pseudo, self.joueurNoir.pseudo, gagnant)
-                                    fini = True
-                                    continue
-                                else:
-                                    res = "ECHEC"
-                            elif not coups_possibles:
+                        if est_echec:
+                            if not coups_possibles:
                                 self.envoyer_aux_deux("\n" + str(self.partie.echiquier) + "\n")
-                                self.envoyer_aux_deux("draw")
-                                enregistrer_partie(self.joueurBlanc.pseudo, self.joueurNoir.pseudo, "Nul")
+                                self.envoyer_aux_deux("ECHEC ET MAT")
+                                
+                                if self.tour_noir:
+                                    self.joueurBlanc.envoyer_message("win")
+                                    self.joueurNoir.envoyer_message("lose")
+                                    gagnant = self.joueurBlanc.pseudo
+                                else:
+                                    self.joueurNoir.envoyer_message("win")
+                                    self.joueurBlanc.envoyer_message("lose")
+                                    gagnant = self.joueurNoir.pseudo
+
+                                enregistrer_partie(self.joueurBlanc.pseudo, self.joueurNoir.pseudo, gagnant)
                                 fini = True
                                 continue
+                            else:
+                                res = "ECHEC"
+                        elif not coups_possibles:
+                            self.envoyer_aux_deux("\n" + str(self.partie.echiquier) + "\n")
+                            self.envoyer_aux_deux("draw")
+                            enregistrer_partie(self.joueurBlanc.pseudo, self.joueurNoir.pseudo, "Nul")
+                            fini = True
+                            continue
 
-                        echiquier = "\n" + str(self.partie.echiquier) + "\n"
-                        self.envoyer_aux_deux(echiquier)
-                        line = self.demander_au_joueur_courant(res + ", C'est au tour des " + ("Noirs" if self.tour_noir else "Blancs") + " : \n")
-                    else:
-                        line = self.demander_au_joueur_courant("ERREUR (Format: play caseSrc caseDst). C'est au tour des " + ("Noirs" if self.tour_noir else "Blancs") + "\n")
+                    echiquier = "\n" + str(self.partie.echiquier) + "\n"
+                    self.envoyer_aux_deux(echiquier)
+                    line = self.demander_au_joueur_courant(res + ", C'est au tour des " + ("Noirs" if self.tour_noir else "Blancs") + " : \n")
+                else:
+                    line = self.demander_au_joueur_courant("ERREUR (Format: play caseSrc caseDst). C'est au tour des " + ("Noirs" if self.tour_noir else "Blancs") + "\n")
 
-                
-                elif cmd == "leave":
-                    if self.tour_noir:
-                        pseudo_gagnant = "Abandon " + self.joueurNoir.pseudo + ". Victoire " + self.joueurBlanc.pseudo
-                    else:
-                        pseudo_gagnant = "Abandon " + self.joueurBlanc.pseudo + ". Victoire " + self.joueurNoir.pseudo
-                    enregistrer_partie(self.joueurBlanc.pseudo, self.joueurNoir.pseudo, pseudo_gagnant)
-                    self.envoyer_au_joueur_courant("OK")
-                    fini = True
+            elif cmd == "leave":
+                if self.tour_noir:
+                    pseudo_gagnant = "Abandon " + self.joueurNoir.pseudo + ". Victoire " + self.joueurBlanc.pseudo
+                else:
+                    pseudo_gagnant = "Abandon " + self.joueurBlanc.pseudo + ". Victoire " + self.joueurNoir.pseudo
+                enregistrer_partie(self.joueurBlanc.pseudo, self.joueurNoir.pseudo, pseudo_gagnant)
+                self.envoyer_au_joueur_courant("OK")
+                fini = True
 
+            elif cmd == "replay":
+                self.joueurBlanc, self.joueurNoir = self.joueurNoir, self.joueurBlanc
+                self.partie = Jeu(self.joueurBlanc, self.joueurNoir)
+                self.tour_noir = False
+                self.envoyer_aux_deux("Nouvelle partie relancée avec le meme joueur!")
+                self.envoyer_aux_deux("\n"+ str(self.partie.echiquier)+"\n")
+                line = self.demander_au_joueur_courant("C'est au tour des Blancs : \n")
 
-                elif choix_blanc == "quit" or choix_noir == "quit":
-                    self.envoyer_aux_deux("OK - Déconnexion.")
-                    break
-
-
-
-
-                elif cmd == "replay":
-                    self.joueurBlanc, self.joueurNoir = self.joueurNoir, self.joueurBlanc
-                    self.partie = Jeu(self.joueurBlanc, self.joueurNoir)
-                    self.tour_noir = False
-                    self.envoyer_aux_deux("Nouvelle partie relancée avec le meme joueur!")
-                    self.envoyer_aux_deux("\n"+ str(self.partie.echiquier)+"\n")
-                    line = self.demander_au_joueur_courant("C'est au tour des Blancs : \n")
-
-                elif cmd == "new":
-                    self.envoyer_au_joueur_courant("OK")
-                    fini = True
+            elif cmd == "new":
+                self.envoyer_au_joueur_courant("OK")
+                fini = True
 
             else:
                 texte = "ERREUR Commande inconnue. C'est au tour des " + ("Noirs" if self.tour_noir else "Blancs") + "\n"
                 line = self.demander_au_joueur_courant(texte)
-        else:
-            line = self.demander_au_joueur_courant("C'est au tour des " + ("Noirs" if self.tour_noir else "Blancs") + " : \n")
 
         print("Fermeture des sessions ou redirection...")
 
