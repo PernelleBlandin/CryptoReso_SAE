@@ -74,3 +74,4 @@ if __name__ == "__main__":
     jeu = Jeu(None, None)
     res = jeu.lancer_solo()
     print(f"Fin de partie, résultat : {res}")
+

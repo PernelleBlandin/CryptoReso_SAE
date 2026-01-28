@@ -15,10 +15,8 @@ class Client:
     def lancer(self):
         thread_envois = Thread(target=self.recuperer_envois)
         thread_envois.start()
-        print("on continue !")
         thread_entrees = Thread(target=self.recuperer_entree)
         thread_entrees.start()
-        print("on continue !")
 
     def recuperer_envois(self):
         print(threading.active_count())
@@ -36,7 +34,6 @@ class Client:
         
 
     def recuperer_entree(self):
-        print(threading.active_count())
         while self.running:
             self.entree = input() # interrompt
             if (self.entree is not None) and (self.entree.strip() != ""):

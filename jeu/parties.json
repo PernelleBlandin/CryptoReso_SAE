@@ -82,5 +82,17 @@
     "noir": "you",
     "gagnant": "you",
     "date": "2026:01:26 00:53:06"
+  },
+  {
+    "blanc": "11",
+    "noir": "22",
+    "gagnant": "22",
+    "date": "2026:01:28 18:49:11"
+  },
+  {
+    "blanc": "yip",
+    "noir": "yup",
+    "gagnant": "yup",
+    "date": "2026:01:28 18:53:53"
   }
 ]

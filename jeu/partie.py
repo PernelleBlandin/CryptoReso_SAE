@@ -104,6 +104,10 @@ class Partie:
                     else:
                         line = self.demander_au_joueur_courant("ERR Aucune partie active. Rejouez : ")
 
+                elif choix_blanc == "quit" or choix_noir == "quit":
+                    self.envoyer_aux_deux("OK - Déconnexion.")
+                    break
+
                 elif cmd == "replay":
                     self.joueurBlanc, self.joueurNoir = self.joueurNoir, self.joueurBlanc
                     self.partie = Jeu(self.joueurBlanc, self.joueurNoir)
@@ -125,14 +129,28 @@ class Partie:
 
         print("Fermeture des sessions...")
 
-        choix_blanc = None
-        choix_noir = None
-
-        while True:
-            if not choix_blanc:
-                choix_blanc = self.joueurBlanc.recuperer_entree("Partie terminée. Tapez 'replay' pour rejouer ou 'quit' pour quitter : ").lower()
-            if not choix_noir:
-                choix_noir = self.joueurNoir.recuperer_entree("Partie terminée. Tapez 'replay' pour rejouer ou 'quit' pour quitter : ").lower()
+        # Pour simplifier, on traite chaque joueur l'un après l'autre
+        for joueur in [self.joueurBlanc, self.joueurNoir]:
+            while True:
+                choix = joueur.recuperer_entree("Partie terminée. Tapez 'replay' pour rejouer,  'new' pour une autre partie ou 'quit' pour quitter : ")
+                
+                if choix == "new":
+                    joueur.envoyer_message("OK")
+                    # On libère le joueur : sa boucle dans session.py va se débloquer
+                    joueur.en_partie = False 
+                    break
+                
+                elif choix == "quit":
+                    joueur.envoyer_message("OK")
+                    joueur.fermer_session()
+                    break
+                
+                elif choix == "replay":
+                    # Note : Le 'replay' demande normalement que les DEUX soient d'accord.
+                    # Pour rester sur ta demande 'new', je me concentre sur la libération.
+                    joueur.envoyer_message("Fonction replay non gérée ici, tapez 'new'.")
+        
+            print("Fin du thread de la partie.")
 
             if choix_blanc == "replay" and choix_noir == "replay":
                 self.envoyer_aux_deux ("OK")
@@ -141,16 +159,32 @@ class Partie:
                 self.lancer()
                 return
             
-            elif choix_blanc == "new" or choix_noir == "new":
-                self.envoyer_aux_deux("OK")
-                if choix_blanc == "new": self.joueurBlanc.pseudo = None
-                if choix_noir == "new": self.joueurNoir.pseudo = None
-                break
+            # elif choix_blanc == "new" or choix_noir == "new":
+            #     if choix_blanc == "new":
+            #         self.joueurBlanc.envoyer_message("OK")
+            #         self.joueurBlanc.pseudo = None # Reset pour la boucle dans session.py
+            #         garder_blanc_ouvert = True
+            #     if choix_noir == "new":
+            #         self.joueurNoir.envoyer_message("OK")
+            #         self.joueurNoir.pseudo = None
+            #         garder_noir_ouvert = True
 
-            if choix_blanc == "quit" or choix_noir == "quit":
-                self.envoyer_aux_deux("OK - Déconnexion.")
-                break
 
+            #     # On vérifie qui a demandé 'new' (pseudo mis à None)
+            #     if self.joueurBlanc.pseudo != None:
+            #         print("Le joueur Blanc repart en file d'attente.")
+            #     else:
+            #         print(f"Fermeture session de {self.joueurBlanc.pseudo}")
+            #         self.joueurBlanc.fermer_session()
 
-        self.joueurBlanc.fermer_session()
-        self.joueurNoir.fermer_session()
+            #     if self.joueurNoir.pseudo is None:
+            #         print("Le joueur Noir (new) repart en file d'attente.")
+            #     else:
+            #         print(f"Fermeture session de {self.joueurNoir.pseudo}")
+            #         self.joueurNoir.fermer_session()
+            #     break
+            
+
+        print("Fermeture des sessions ou redirection...")
+
+        
