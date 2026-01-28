@@ -1,10 +1,8 @@
 import socket
 import constantes
 from session import *
-from threading import Thread
 from queue import Queue
 from partie import *
-
 
 class Serveur:
    def __init__(self):

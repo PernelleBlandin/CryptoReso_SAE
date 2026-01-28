@@ -9,7 +9,6 @@ class Jeu():
        self.joueur2 = joueur2
        self.echiquier = Echiquier()
 
-
     def lancer_solo(self):
         pseudo_blanc = input("Pseudo du joueur Blanc : ").strip()
         pseudo_noir = input("Pseudo du joueur Noir : ").strip()
@@ -18,15 +17,15 @@ class Jeu():
 
         resultat = self.echiquier.jouer(self.joueur1, self.joueur2)
         if resultat == "abandon blanc":
-           pseudo_gagnant = "Abandon " + pseudo_blanc + ". Victoire " + pseudo_noir
+            pseudo_gagnant = "Abandon " + pseudo_blanc + ". Victoire " + pseudo_noir
         elif resultat == "abandon noir":
-           pseudo_gagnant = "Abandon " + pseudo_noir + ". Victoire " + pseudo_blanc
+            pseudo_gagnant = "Abandon " + pseudo_noir + ". Victoire " + pseudo_blanc
         elif resultat is None:
-           pseudo_gagnant = None
+            pseudo_gagnant = None
         elif resultat:
-           pseudo_gagnant = pseudo_noir
+            pseudo_gagnant = pseudo_noir
         else:
-           pseudo_gagnant = pseudo_blanc
+            pseudo_gagnant = pseudo_blanc
         enregistrer_partie(pseudo_blanc, pseudo_noir, pseudo_gagnant)
 
 
